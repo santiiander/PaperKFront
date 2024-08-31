@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="registerstyle.css">
+</head>
+<body>
+    <div class="container">
+        <img src="origami.png" alt="Logo">
+        <h2>Registrarse</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="termsCheckbox" required>
+                <label class="form-check-label" for="termsCheckbox">
+                    Acepto los <a href="#" id="termsLink">términos y condiciones</a>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup" id="termsPopup">
+        <span class="close-popup" id="closePopup">&times;</span>
+        <h2>Términos y Condiciones</h2>
+        <div class="popup-content">
+            <p><strong>Fecha de última actualización: 29/08/2024</strong></p>
+            <h3>1. Aceptación de los Términos</h3>
+            <p>Al acceder o utilizar el sitio web PaperK, aceptas estos Términos y Condiciones. Si no estás de acuerdo con alguno de estos términos, no utilices el sitio web.</p>
+            <h3>2. Descripción del Servicio</h3>
+            <p>PaperK permite a los usuarios crear, subir, compartir y descargar archivos PDF de origami. El sitio web proporciona una plataforma para que los diseñadores y entusiastas del origami compartan sus proyectos y disfruten de las creaciones de otros.</p>
+            <h3>3. Uso del Sitio Web</h3>
+            <ul>
+                <li><strong>Registro y Cuenta:</strong> Para subir proyectos y acceder a ciertas funcionalidades, es posible que debas crear una cuenta en PaperK. Eres responsable de mantener la confidencialidad de tu información de inicio de sesión y de todas las actividades que ocurran bajo tu cuenta.</li>
+                <li><strong>Contenido del Usuario:</strong> Al subir contenido al sitio web, otorgas a PaperK una licencia mundial, no exclusiva, libre de regalías y sublicenciable para usar, reproducir, modificar, exhibir y distribuir dicho contenido.</li>
+                <li><strong>Conducta del Usuario:</strong> Te comprometes a no subir contenido que sea ilegal, ofensivo, difamatorio, obsceno o que infrinja los derechos de propiedad intelectual de terceros.</li>
+            </ul>
+            <h3>4. Propiedad Intelectual</h3>
+            <p>Todo el contenido y material en PaperK, incluidos los textos, gráficos, logotipos y software, están protegidos por las leyes de propiedad intelectual y son propiedad de PaperK o de sus licenciantes.</p>
+            <h3>5. Privacidad</h3>
+            <p>Tu privacidad es importante para nosotros. Consulta nuestra <a href="/privacy-policy.html">Política de Privacidad</a> para entender cómo recopilamos, usamos y protegemos tu información personal.</p>
+            <h3>6. Limitación de Responsabilidad</h3>
+            <p>PaperK no se responsabiliza por ningún daño o pérdida que pueda surgir del uso del sitio web o del contenido disponible en él. El sitio se proporciona "tal cual" y "según disponibilidad".</p>
+            <h3>7. Modificaciones</h3>
+            <p>PaperK se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Te notificaremos sobre cambios significativos y la continuación del uso del sitio web implica la aceptación de las modificaciones.</p>
+            <h3>8. Contacto</h3>
+            <p>Si tienes alguna pregunta sobre estos Términos y Condiciones, por favor, contáctanos a través de <a href="mailto:santiagoandermatten1@gmail.com">santiagoandermatten1@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>

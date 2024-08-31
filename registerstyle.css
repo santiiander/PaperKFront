@@ -1,0 +1,95 @@
+body {
+    background-color: #b9c480;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    max-width: 450px;
+    background-color: #2E3A3A;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.container img {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 175px;
+    height: 175px;
+    border-radius: 50%;
+    border: 2px solid #000000;
+    animation: rotate 10s linear infinite; /* Añade la animación */
+    transition: animation 0.5s ease-in-out; /* Transición suave para la animación */
+}
+
+.container img:hover {
+    animation-play-state: paused; /* Pausa la animación al pasar el mouse */
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #3d6172;
+    border-color: #526880;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+
+/* Estilos para el popup */
+.popup {
+    border-radius: 15px;
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    z-index: 1000;
+}
+.popup-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+.close-popup {
+    cursor: pointer;
+    float: right;
+    font-size: 1.2em;
+}

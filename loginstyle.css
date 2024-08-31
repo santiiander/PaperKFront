@@ -1,0 +1,60 @@
+body {
+    background-color: #b9c480;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    max-width: 450px;
+    background-color: #2E3A3A;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.container img {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 175px;
+    height: 175px;
+    border-radius: 50%;
+    border: 2px solid #000000;
+    animation: rotate 10s linear infinite; /* Añade la animación */
+    transition: animation 0.5s ease-in-out; /* Transición suave para la animación */
+}
+
+.container img:hover {
+    animation-play-state: paused; /* Pausa la animación al pasar el mouse */
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #3d6172;
+    border-color: #526880;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Proyectos</title>
+    <link rel='stylesheet' type='text/css' media='screen' href='myproy.css'>
+</head>
+<body>
+    <header>
+        <h1>Mis Proyectos</h1>
+        <div id="userInfo">
+            <span id="userEmail"></span>
+            
+        </div>
+        <button id="backToHub" onclick="window.location.href='index.html'">Volver al HUB</button>
+    </header>
+
+    <div id="userProjectsContainer" class="projects-grid">
+        <!-- Los proyectos del usuario se cargarán aquí -->
+    </div>
+
+    <!-- Popup de confirmación de eliminación -->
+    <div id="deletePopup" class="popup-form">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('deletePopup')">&times;</span>
+            <h2>¿Estás seguro de que quieres eliminar este proyecto?</h2>
+            <button id="confirmDeleteButton">Eliminar</button>
+            <button onclick="closePopup('deletePopup')">Cancelar</button>
+        </div>
+    </div>
+
+    <script src='myproy.js'></script>
+</body>
+</html>

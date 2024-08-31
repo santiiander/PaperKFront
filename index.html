@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Proyect PaperK</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js' defer></script> <!-- Añadido 'defer' para asegurar que el script se cargue después del HTML -->
+</head>
+<body>
+    <header class="headerLogin">
+        <ul class="ulHeader">
+            <li><a href="register.html">Registrarse</a></li>
+            <li>|</li>
+            <li><a href="login.html">Iniciar sesión</a></li>
+        </ul>
+    </header>
+    <header class="headerPrincipal">
+        <nav>
+            <div class="navbar">
+                <ul class="nav-list">
+                    <li class="test"><a href="wip.html">Inicio</a></li>
+                    <li class="test"><a href="wip.html">Contacto</a></li>
+                    <li class="test"><a href="wip.html">About</a></li>
+                    <li class="test2"><a href="javascript:void(0)" onclick="openPopup()"> <img src="/sapiens/cloud-upload-alt.png" alt="nube" class="nube">Publicar</a></li>
+                    <li class="test3"><a href="myproy.html">Mis proyectos</a></li>
+                </ul>
+                <div id="user-info" class="user-actions">
+                    <span id="username" class="username">Nombre de Usuario</span>
+                    <button id="logoutButton" class="login-btn">Logout</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Nueva sección para la imagen -->
+    <div class="profile-image-container">
+        <img src="origami.png" alt="Profile Image" class="profile-image">
+    </div>
+
+    <main>
+        <section class="info">
+            <div class="hero-text">
+                <h1>Bienvenido a PaperK</h1>
+                <p>Un lugar donde los diseñadores y artesanos se unen para crear productos y diseños inspiradores.</p>
+            </div>
+        </section>
+        <section class="papersK" id="projectsContainer">
+            <!-- Los proyectos se llenarán aquí dinámicamente -->
+        </section>
+        <!-- Popup Formulario -->
+        <div id="popupForm" class="popup-form">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup()">&times;</span>
+                <h2>Agregar Proyecto</h2>
+                <form id="proyectoForm" action="/proyectos/" method="post" enctype="multipart/form-data">
+                    <label for="nombre">Nombre del Proyecto:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" name="descripcion" required></textarea>
+
+                    <label for="archivo_pdf">Subir PDF:</label>
+                    <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
+
+                    <label for="imagen">Subir Imagen:</label>
+                    <input type="file" id="imagen" name="imagen" accept="image/*" required>
+
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,84 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #ff9a9e, #3e7c47, #554077, #7570b9);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative; /* Required for positioning the back-to-home button */
+}
+
+/* Keyframes for background gradient animation */
+@keyframes gradientBG {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.work-in-progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 2px solid #cccccc;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.progress-image {
+    width: 150px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.progress-text {
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Back to Home Button Styles */
+.back-to-home {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #557eca;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.back-to-home:hover {
+    background-color: #3d5afe;
+    transform: scale(1.05);
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .work-in-progress-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .progress-image {
+        margin-bottom: 20px;
+        margin-right: 0;
+    }
+}
