@@ -46,7 +46,7 @@ function registerUser() {
     })
     .then(data => {
         alert('Registro exitoso!');
-        window.location.href = '/plantillas/login.html'; // Redirige al login después del registro
+        window.location.href = 'login.html'; // Redirige al login después del registro
     })
     .catch(error => {
         console.error('Error:', error);
