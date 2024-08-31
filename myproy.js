@@ -53,7 +53,7 @@ function loadUserProjects() {
                 <h2>${project.nombre}</h2>
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
-                <img src="/sapiens/delete.png" alt="Eliminar" class="delete-button" onclick="showDeletePopup(${project.id})">
+                <img src="delete.png" alt="Eliminar" class="delete-button" onclick="showDeletePopup(${project.id})">
             `;
             container.appendChild(projectDiv);
         });

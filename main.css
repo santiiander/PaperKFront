@@ -134,7 +134,7 @@ body {
 }
 
 .download-button {
-    background-image: url('/sapiens/descargar.png');
+    background-image: url('descargar.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

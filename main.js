@@ -137,13 +137,13 @@ function updateUI() {
             logoutButton.addEventListener('click', function() {
                 localStorage.removeItem('username');
                 localStorage.removeItem('access_token');
-                window.location.href = '/plantillas/login.html';
+                window.location.href = 'login.html';
             });
         } else {
             usernameElement.textContent = 'Usuario no autenticado';
             logoutButton.textContent = 'Login';
             logoutButton.addEventListener('click', function() {
-                window.location.href = '/plantillas/login.html';
+                window.location.href = 'login.html';
             });
         }
     }
