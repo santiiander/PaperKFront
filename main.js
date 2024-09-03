@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function getToken() {
     const token = localStorage.getItem('access_token');
     console.log('Token:', token); // Añade esto para verificar el token
-    console.log('Versión: V.TokenExpanded')
+    console.log('Versión: V.TokenExpanded3')
     return token;
 }
 
@@ -22,7 +22,7 @@ function loadProjects() {
         if (response.status === 401) {
             alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
             localStorage.removeItem('access_token');
-            window.location.href = '/plantillas/login.html';
+            window.location.href = 'login.html';
             return;
         }
         if (!response.ok) {
@@ -163,7 +163,7 @@ function updateUI() {
             usernameElement.textContent = 'Usuario no autenticado';
             logoutButton.textContent = 'Login';
             logoutButton.addEventListener('click', function() {
-                window.location.href = '/plantillas/login.html';
+                window.location.href = 'login.html';
             });
         }
     }
@@ -198,7 +198,7 @@ function login() {
         localStorage.setItem('access_token', data.access_token);
         localStorage.setItem('username', data.email); // O cualquier otro identificador del usuario
         alert('Login successful!');
-        window.location.href = '/plantillas/index.html'; // Redirige a la página principal
+        window.location.href = 'index.html'; // Redirige a la página principal
     })
     .catch(error => {
         console.error('Error:', error);
