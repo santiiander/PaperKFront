@@ -1,27 +1,31 @@
 body {
-    background-color: #b9c480;
+    background-color: #51448d88;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden; /* Evita el scroll cuando el contenedor se acerca al borde */
 }
 
 .container {
-    max-width: 450px;
-    background-color: #2E3A3A;
+    max-width: 425px; /* Reduce el ancho máximo del contenedor */
+    width: 90%; /* Ajusta el ancho del contenedor */
+    background-color: #334e6d;
     padding: 20px;
     border-radius: 10px;
     color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
 }
 
 .container img {
     display: block;
-    margin: 0 auto 20px auto;
-    width: 175px;
-    height: 175px;
+    margin: 0 auto 15px auto; /* Reduce el margen inferior */
+    width: 150px; /* Ajusta el tamaño de la imagen */
+    height: 150px; /* Ajusta el tamaño de la imagen */
     border-radius: 50%;
     border: 2px solid #000000;
     animation: rotate 10s linear infinite; /* Añade la animación */
@@ -42,7 +46,11 @@ body {
 }
 
 .container h2 {
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduce el margen inferior del título */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Ajusta el margen entre los campos del formulario */
 }
 
 .form-group label {

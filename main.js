@@ -1,19 +1,27 @@
+let currentPage = 1; // Página actual
+const limit = 12; // Número de proyectos por solicitud
+let isLoading = false; // Para evitar solicitudes múltiples simultáneas
+
 document.addEventListener('DOMContentLoaded', () => {
-    loadProjects();
+    loadProjects(currentPage); // Carga los proyectos de la página inicial
     updateUI(); // Actualiza la UI al cargar la página
+    window.addEventListener('scroll', handleScroll); // Añade el listener para el scroll
 });
 
 // Función para obtener el token del almacenamiento local
 function getToken() {
     const token = localStorage.getItem('access_token');
     console.log('Token:', token); // Añade esto para verificar el token
-    console.log('Versión: V.TokenExpanded3')
+    console.log('Versión: V.TokenExpanded32');
     return token;
 }
 
 // Función para cargar los proyectos desde el backend
-function loadProjects() {
-    fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer", {
+function loadProjects(page) {
+    if (isLoading) return;
+    isLoading = true;
+
+    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -31,28 +39,40 @@ function loadProjects() {
         return response.json();
     })
     .then(projects => {
-        const container = document.getElementById('projectsContainer');
-        container.innerHTML = ''; // Limpia el contenedor antes de agregar los nuevos proyectos
-
-        if (!Array.isArray(projects)) {
-            throw new Error("La respuesta no es un array de proyectos.");
+        if (projects.length === 0) {
+            window.removeEventListener('scroll', handleScroll); // Elimina el listener si no hay más proyectos
+            return;
         }
 
+        const container = document.getElementById('projectsContainer');
         projects.forEach(project => {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'paper';
-            projectDiv.dataset.pdfPath = project.archivo_pdf; // Añadido para almacenar la ruta del PDF
-            
+            projectDiv.dataset.pdfPath = project.archivo_pdf;
+
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
-                <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}')"></button>
+                <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}')">Descargar PDF</button>
             `;
             container.appendChild(projectDiv);
         });
+
+        currentPage++; // Incrementa la página para la próxima carga
+        isLoading = false;
     })
-    .catch(error => console.error('Error al cargar los proyectos:', error));
+    .catch(error => {
+        console.error('Error al cargar los proyectos:', error);
+        isLoading = false;
+    });
+}
+
+// Función para manejar el scroll y cargar más proyectos
+function handleScroll() {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+        loadProjects(currentPage); // Carga los proyectos de la siguiente página
+    }
 }
 
 // Función para descargar el archivo PDF
@@ -111,7 +131,7 @@ function createProject() {
         if (response.ok) {
             alert("Proyecto creado exitosamente");
             closePopup();
-            loadProjects(); // Recargar proyectos para ver el nuevo
+            loadProjects(currentPage); // Recargar proyectos para ver el nuevo
         } else {
             return response.json().then(result => {
                 throw new Error(result.detail || 'Error creando proyecto');
@@ -157,7 +177,7 @@ function updateUI() {
             logoutButton.addEventListener('click', function() {
                 localStorage.removeItem('username');
                 localStorage.removeItem('access_token');
-                window.location.href = '/plantillas/login.html';
+                window.location.href = 'login.html';
             });
         } else {
             usernameElement.textContent = 'Usuario no autenticado';
@@ -212,3 +232,36 @@ document.addEventListener('scroll', function() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     image.style.transform = `rotate(${scrollTop / 2}deg)`; // Ajusta la rotación según la velocidad deseada
 });
+
+// Control de carrusel
+let currentSlide = 0;
+const slides = document.querySelectorAll('.carousel-item');
+const indicators = document.querySelectorAll('.indicator');
+
+function goToSlide(index) {
+    const offset = -index * 100;
+    document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+    indicators.forEach((indicator, i) => {
+        indicator.classList.toggle('active', i === index);
+    });
+    currentSlide = index;
+}
+
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    goToSlide(currentSlide);
+}
+
+// Cambiar la diapositiva automáticamente cada 5 segundos
+setInterval(nextSlide, 5000);
+
+// Configurar indicadores para cambiar diapositivas al hacer clic
+indicators.forEach((indicator) => {
+    indicator.addEventListener('click', () => {
+        const index = parseInt(indicator.getAttribute('data-slide'), 10);
+        goToSlide(index);
+    });
+});
+
+// Inicializar el carrusel
+goToSlide(currentSlide);
