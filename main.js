@@ -105,7 +105,7 @@ function createProject() {
         if (response.status === 401) {
             alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
             localStorage.removeItem('access_token');
-            window.location.href = '/plantillas/login.html';
+            window.location.href = 'login.html';
             return;
         }
         if (response.ok) {
