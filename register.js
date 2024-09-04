@@ -19,6 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('popupOverlay').style.display = 'none';
         document.getElementById('termsPopup').style.display = 'none';
     });
+
+    // Para el popup de error
+    document.getElementById('closeErrorPopup').addEventListener('click', function() {
+        document.getElementById('errorPopupOverlay').style.display = 'none';
+        document.getElementById('errorPopup').style.display = 'none';
+    });
+
+    document.getElementById('errorPopupOverlay').addEventListener('click', function() {
+        document.getElementById('errorPopupOverlay').style.display = 'none';
+        document.getElementById('errorPopup').style.display = 'none';
+    });
+
+    document.getElementById('continueButton').addEventListener('click', function() {
+        window.location.href = 'login.html';
+    });
 });
 
 function registerUser() {
@@ -30,8 +45,8 @@ function registerUser() {
         body: JSON.stringify({
             email: formData.get('email'),
             password: formData.get('password'),
-            nombre: 'Nombre de Usuario', // Puedes cambiar esto o agregar un campo en el formulario
-            descripcion: 'Descripción del Usuario' // Puedes cambiar esto o agregar un campo en el formulario
+            nombre: 'Nombre de Usuario',
+            descripcion: 'Descripción del Usuario'
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -40,16 +55,23 @@ function registerUser() {
     .then(response => {
         if (response.ok) {
             return response.json();
+        } else if (response.status === 400) {
+            throw new Error('Usuario ya registrado');
         } else {
             throw new Error('Error en el registro');
         }
     })
     .then(data => {
-        alert('Registro exitoso!');
-        window.location.href = 'login.html'; // Redirige al login después del registro
+        alert('¡Registro exitoso!');
+        window.location.href = 'login.html';
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un problema con el registro.');
+        if (error.message === 'Usuario ya registrado') {
+            document.getElementById('errorPopupOverlay').style.display = 'block';
+            document.getElementById('errorPopup').style.display = 'block';
+        } else {
+            console.error('Error:', error);
+            alert('Hubo un problema con el registro.');
+        }
     });
 }

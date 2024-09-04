@@ -102,3 +102,36 @@ body {
     float: right;
     font-size: 1.2em;
 }
+
+/* Elimina cualquier borde o fondo adicional que pueda estar causando el cuadrado */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Ajuste de la transparencia */
+    z-index: 999;
+    pointer-events: none; /* Evita que el overlay interfiera con el clic */
+}
+
+/* Asegúrate de que el popup esté limpio y no tenga bordes ni fondos no deseados */
+.popup {
+    border-radius: 15px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1000;
+    max-width: 80vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: none; /* Asegura que se muestra solo cuando se activa */
+}
+
+/* Si el problema persiste, asegúrate de que no haya bordes en el popup */
