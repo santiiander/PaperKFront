@@ -76,6 +76,9 @@
                 <span class="close" onclick="closePopup()">&times;</span>
                 <h2>Agregar Proyecto</h2>
                 <form id="proyectoForm" action="/proyectos/" method="post" enctype="multipart/form-data">
+                    <label for="usuario_nombre">Nombre del Usuario:</label>
+                    <input type="text" id="usuario_nombre" name="usuario_nombre" required>
+
                     <label for="nombre">Nombre del Proyecto:</label>
                     <input type="text" id="nombre" name="nombre" required>
 

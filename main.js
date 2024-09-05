@@ -52,6 +52,7 @@ function loadProjects(page) {
 
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
+                <p><strong>Subido por:</strong> ${project.usuario_nombre}</p> <!-- Mostrar el nombre del usuario -->
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
                 <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}')">Descargar PDF</button>
