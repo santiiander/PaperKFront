@@ -12,43 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function getToken() {
     const token = localStorage.getItem('access_token');
     console.log('Token:', token); // Añade esto para verificar el token
+    console.log('Versión: V.TokenExpanded32');
     return token;
-}
-
-// Función para obtener la lista de servidores disponibles
-function getAvailableServers() {
-    return fetch('https://api.gofile.io/servers', {
-        method: 'GET'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            return data.data.servers;
-        } else {
-            throw new Error('Error al obtener servidores');
-        }
-    })
-    .catch(error => console.error(error));
-}
-
-// Función para subir archivos a GoFile
-function uploadFile(file, serverName) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return fetch(`https://${serverName}.gofile.io/uploadFile`, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            return data.data.downloadPage; // URL de la página de descarga
-        } else {
-            throw new Error('Error al subir archivo');
-        }
-    })
-    .catch(error => console.error(error));
 }
 
 // Función para cargar los proyectos desde el backend
@@ -87,7 +52,7 @@ function loadProjects(page) {
 
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
-                <img src="${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+                <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
                 <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}')">Descargar PDF</button>
             `;
@@ -103,7 +68,6 @@ function loadProjects(page) {
     });
 }
 
-
 // Función para manejar el scroll y cargar más proyectos
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
@@ -113,7 +77,9 @@ function handleScroll() {
 
 // Función para descargar el archivo PDF
 function downloadPDF(pdfPath) {
-    fetch(pdfPath, {
+    const url = `https://proyectpaperk-production.up.railway.app/${pdfPath}`;
+    
+    fetch(url, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -148,31 +114,12 @@ function createProject() {
     const form = document.querySelector('#proyectoForm');
     const formData = new FormData(form);
 
-    getAvailableServers()
-    .then(servers => {
-        const selectedServer = servers[0]; // Selecciona el primer servidor o implementa una lógica para elegir
-        const pdfFile = formData.get('archivo_pdf');
-        const imageFile = formData.get('imagen');
-
-        return Promise.all([
-            uploadFile(pdfFile, selectedServer.name),
-            uploadFile(imageFile, selectedServer.name)
-        ])
-        .then(([pdfLink, imageLink]) => {
-            return fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
-                method: "POST",
-                body: JSON.stringify({
-                    nombre: formData.get('nombre'),
-                    descripcion: formData.get('descripcion'),
-                    archivo_pdf: pdfLink,
-                    imagen: imageLink
-                }),
-                headers: {
-                    "Authorization": `Bearer ${getToken()}`,
-                    "Content-Type": "application/json"
-                }
-            });
-        });
+    fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "Authorization": `Bearer ${getToken()}` // No necesitas especificar Content-Type cuando usas FormData
+        }
     })
     .then(response => {
         if (response.status === 401) {
@@ -252,14 +199,69 @@ function getUsername() {
 // Función para manejar el login del usuario
 function handleLoginResponse(response) {
     if (response.ok) {
-        response.json().then(data => {
-            localStorage.setItem('access_token', data.access_token);
-            localStorage.setItem('username', data.username);
-            window.location.href = 'myproy.html'; // Redirige al hub de proyectos
-        });
+        return response.json();
     } else {
-        response.json().then(data => {
-            alert(data.detail || 'Error al iniciar sesión');
-        });
+        throw new Error('Login failed');
     }
 }
+
+// Función para iniciar sesión
+function login() {
+    const formData = new FormData(document.querySelector('#loginForm'));
+
+    fetch('https://proyectpaperk-production.up.railway.app/auth/login', {
+        method: 'POST',
+        body: formData
+    })
+    .then(handleLoginResponse)
+    .then(data => {
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('username', data.email); // O cualquier otro identificador del usuario
+        alert('Login successful!');
+        window.location.href = 'index.html'; // Redirige a la página principal
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to login');
+    });
+}
+
+// Función para rotar la imagen del perfil al hacer scroll
+document.addEventListener('scroll', function() {
+    const image = document.querySelector('.profile-image');
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    image.style.transform = `rotate(${scrollTop / 2}deg)`; // Ajusta la rotación según la velocidad deseada
+});
+
+// Control de carrusel
+let currentSlide = 0;
+const slides = document.querySelectorAll('.carousel-item');
+const indicators = document.querySelectorAll('.indicator');
+
+function goToSlide(index) {
+    const offset = -index * 100;
+    document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+    indicators.forEach((indicator, i) => {
+        indicator.classList.toggle('active', i === index);
+    });
+    currentSlide = index;
+}
+
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    goToSlide(currentSlide);
+}
+
+// Cambiar la diapositiva automáticamente cada 5 segundos
+setInterval(nextSlide, 5000);
+
+// Configurar indicadores para cambiar diapositivas al hacer clic
+indicators.forEach((indicator) => {
+    indicator.addEventListener('click', () => {
+        const index = parseInt(indicator.getAttribute('data-slide'), 10);
+        goToSlide(index);
+    });
+});
+
+// Inicializar el carrusel
+goToSlide(currentSlide);
