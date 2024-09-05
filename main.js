@@ -103,6 +103,7 @@ function loadProjects(page) {
     });
 }
 
+
 // Función para manejar el scroll y cargar más proyectos
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
@@ -149,31 +150,29 @@ function createProject() {
 
     getAvailableServers()
     .then(servers => {
-        const serverName = servers[0].name; // Suponiendo que tomamos el primer servidor disponible
+        const selectedServer = servers[0]; // Selecciona el primer servidor o implementa una lógica para elegir
+        const pdfFile = formData.get('archivo_pdf');
+        const imageFile = formData.get('imagen');
 
-        // Subir PDF
-        return uploadFile(formData.get('archivo_pdf'), serverName)
-            .then(pdfUrl => {
-                // Subir Imagen
-                return uploadFile(formData.get('imagen'), serverName)
-                    .then(imageUrl => {
-                        const proyectoData = {
-                            nombre: formData.get('nombre'),
-                            descripcion: formData.get('descripcion'),
-                            archivo_pdf: pdfUrl,
-                            imagen: imageUrl
-                        };
-
-                        return fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
-                            method: "POST",
-                            body: JSON.stringify(proyectoData),
-                            headers: {
-                                "Authorization": `Bearer ${getToken()}`,
-                                "Content-Type": "application/json"
-                            }
-                        });
-                    });
+        return Promise.all([
+            uploadFile(pdfFile, selectedServer.name),
+            uploadFile(imageFile, selectedServer.name)
+        ])
+        .then(([pdfLink, imageLink]) => {
+            return fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
+                method: "POST",
+                body: JSON.stringify({
+                    nombre: formData.get('nombre'),
+                    descripcion: formData.get('descripcion'),
+                    archivo_pdf: pdfLink,
+                    imagen: imageLink
+                }),
+                headers: {
+                    "Authorization": `Bearer ${getToken()}`,
+                    "Content-Type": "application/json"
+                }
             });
+        });
     })
     .then(response => {
         if (response.status === 401) {
