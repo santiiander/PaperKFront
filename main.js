@@ -112,9 +112,7 @@ function handleScroll() {
 
 // Función para descargar el archivo PDF
 function downloadPDF(pdfPath) {
-    const url = pdfPath; // URL del PDF en GoFile
-    
-    fetch(url, {
+    fetch(pdfPath, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
