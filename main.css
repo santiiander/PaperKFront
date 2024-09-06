@@ -37,6 +37,7 @@ body {
 
 .nav-list a {
     color: #f0f0f0;
+    background-color: #2e364b;
     text-decoration: none;
     padding: 10px 20px; /* Asegura un padding uniforme */
     display: block;
@@ -46,6 +47,7 @@ body {
     min-width: 120px; /* Asegura que todos los botones tengan un ancho mínimo igual */
     border: solid 0.5px #32504d;
     border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
 }
 
 .nav-list a:hover {
@@ -319,10 +321,11 @@ body {
 
 /* Carrusel */
 .carousel {
-    width: 100%;
-    margin: 0; /* Elimina el margen superior */
+    border-radius: 15px;
+    margin: 50px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
 }
 
 .carousel-inner {
