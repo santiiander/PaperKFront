@@ -54,19 +54,8 @@ body {
     color: #000000;
 }
 
-.test:hover {
-    background-color: #57CC99;
-    border-radius: 5px;
-}
-
-.test2:hover {
-    background-color: #3A5A40;
-    border-radius: 5px;
-}
-
-.test3:hover {
-    background-color: #C84B31;
-    border-radius: 5px;
+.nav-list a:hover{
+    background-color: rgb(218, 208, 127);
 }
 
 .user-actions {
@@ -89,7 +78,7 @@ body {
 }
 
 .login-btn {
-    background-color: #57CC99;
+    background-color: rgb(218, 208, 127);
     border: none;
     padding: 8px 16px;
     border-radius: 5px;
@@ -100,18 +89,20 @@ body {
 }
 
 .login-btn:hover {
-    background-color: #80ED99;
+    color: white;
+    background-color: #2e364b;
 }
 
 /* Información adicional */
 .info {
+
     background-color: #5c88b9;
-    margin: 5px;
-    margin-top: 10px;
+    margin: 50px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 15px;
     color: #f0f0f0;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
 }
 
 /* Proyectos */
