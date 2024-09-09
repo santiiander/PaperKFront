@@ -454,3 +454,175 @@ p, a, li, span {
     margin-bottom: 10px;
 }
 
+/* Estilos del botón de publicación cuando se está procesando */
+#publicarBtn {
+    background-color: #57CC99;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#publicarBtn.loading {
+    background-color: #45a049;
+    cursor: not-allowed;
+    position: relative;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+#publicarBtn.loading::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estilos para bloquear la pantalla */
+.screen-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen-blocker.active {
+    display: flex;
+    color: white;
+    font-size: 1.5rem;
+}
+
+
+/* Estilos para el spinner */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Proyectos */
+.papersK {
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Asegura separación uniforme entre proyectos */
+    gap: 20px; /* Espacio entre proyectos */
+    box-sizing: border-box;
+}
+
+/* Proyecto */
+.paper {
+    background-color: #2e364b;
+    color: #f0f0f0;
+    flex: 1 0 calc(33.333% - 20px); /* 3 proyectos por fila con espacio */
+    max-width: calc(33.333% - 20px);
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    border-radius: 10px; /* Esquinas redondeadas */
+    margin-bottom: 20px; /* Espacio en la parte inferior de cada proyecto */
+}
+
+.paper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen del proyecto */
+.project-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Botón de descarga */
+.download-button {
+    background-image: url('descargar.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 50px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+    display: none;
+    background-color: transparent;
+    color: transparent;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.paper:hover .download-button {
+    display: block;
+}
+
+/* Estilo de texto y elementos dentro del proyecto */
+.project-image, 
+.paper h2, 
+.paper p {
+    transition: opacity 0.3s ease;
+}
+
+.paper:hover .project-image, 
+.paper:hover h2, 
+.paper:hover p {
+    opacity: 0.5;
+}
+
+.paper:hover .download-button {
+    opacity: 1;
+}
+
+/* Media Queries */
+@media (max-width: 800px) {
+    .paper {
+        flex: 1 0 calc(50% - 20px); /* 2 proyectos por fila */
+        max-width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 500px) {
+    .paper {
+        flex: 1 0 100%; /* 1 proyecto por fila */
+        max-width: 100%;
+    }
+}

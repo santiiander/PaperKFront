@@ -55,7 +55,8 @@ function loadProjects(page) {
                 <p><strong>Subido por:</strong> ${project.usuario_nombre}</p> <!-- Mostrar el nombre del usuario -->
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
-                <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}')">Descargar PDF</button>
+                <button id="downloadButton-${project.id}" class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+                <div id="loadingSpinner-${project.id}" class="spinner" style="display: none;"></div>
             `;
             container.appendChild(projectDiv);
         });
@@ -68,7 +69,6 @@ function loadProjects(page) {
         isLoading = false;
     });
 }
-
 // Función para manejar el scroll y cargar más proyectos
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
@@ -76,11 +76,17 @@ function handleScroll() {
     }
 }
 
-// Función para descargar el archivo PDF
-function downloadPDF(pdfPath) {
-    const url = `https://proyectpaperk-production.up.railway.app/${pdfPath}`;
-    
-    fetch(url, {
+// Función para descargar un proyecto con spinner
+function downloadPDF(pdfPath, projectId) {
+    const downloadButton = document.getElementById(`downloadButton-${projectId}`);
+    const loadingSpinner = document.getElementById(`loadingSpinner-${projectId}`);
+
+    // Deshabilitar el botón de descarga y mostrar el spinner
+    downloadButton.disabled = true;
+    downloadButton.textContent = 'Descargando...';
+    loadingSpinner.style.display = 'inline-block';
+
+    fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -95,31 +101,49 @@ function downloadPDF(pdfPath) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.blob();
+        return response.blob(); // Convertir la respuesta en un blob para manejar el archivo
     })
     .then(blob => {
-        const link = document.createElement('a');
+        // Crear un enlace temporal para descargar el archivo
         const url = window.URL.createObjectURL(blob);
-        link.href = url;
-        link.download = pdfPath.split('/').pop(); // Establece el nombre del archivo basado en la ruta
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link); // Elimina el enlace después de hacer clic
-        window.URL.revokeObjectURL(url); // Libera el objeto URL
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = pdfPath.split('/').pop(); // Asignar un nombre al archivo
+        document.body.appendChild(a);
+        a.click(); // Hacer clic en el enlace para descargar
+        window.URL.revokeObjectURL(url); // Liberar el objeto URL
+        document.body.removeChild(a); // Remover el enlace del DOM
     })
-    .catch(error => console.error('Error al descargar el PDF:', error));
+    .catch(error => {
+        console.error('Error al descargar el PDF:', error);
+        alert('Error al descargar el proyecto. Por favor, intenta de nuevo.');
+    })
+    .finally(() => {
+        // Restaurar el estado del botón
+        downloadButton.disabled = false;
+        downloadButton.textContent = 'Descargar PDF';
+        loadingSpinner.style.display = 'none';
+    });
 }
 
+// Función para crear un nuevo proyecto
 // Función para crear un nuevo proyecto
 function createProject() {
     const form = document.querySelector('#proyectoForm');
     const formData = new FormData(form);
 
+    // Cambiar el estado del botón y mostrar el spinner
+    const submitButton = document.getElementById('submitButton');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Subiendo...';
+    loadingSpinner.style.display = 'inline-block';
+
     fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
         method: "POST",
         body: formData,
         headers: {
-            "Authorization": `Bearer ${getToken()}` // No necesitas especificar Content-Type cuando usas FormData
+            "Authorization": `Bearer ${getToken()}`
         }
     })
     .then(response => {
@@ -142,6 +166,12 @@ function createProject() {
     .catch(error => {
         console.error("Error:", error);
         alert("Error al subir el proyecto. Por favor, intenta de nuevo.");
+    })
+    .finally(() => {
+        // Restaurar el estado del botón
+        submitButton.disabled = false;
+        submitButton.textContent = 'Publicar Proyecto';
+        loadingSpinner.style.display = 'none';
     });
 }
 

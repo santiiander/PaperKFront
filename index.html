@@ -91,7 +91,8 @@
                     <label for="imagen">Subir Imagen:</label>
                     <input type="file" id="imagen" name="imagen" accept="image/*" required>
 
-                    <button type="submit">Enviar</button>
+                    <button id="submitButton" class="submit-button" onclick="createProject()">Publicar Proyecto</button>
+                    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
                 </form>
             </div>
         </div>
