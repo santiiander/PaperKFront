@@ -533,7 +533,7 @@ p, a, li, span {
 
 /* Proyectos */
 .papersK {
-    margin: 0 auto;
+    margin: 50px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
