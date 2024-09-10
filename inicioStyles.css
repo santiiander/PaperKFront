@@ -1,0 +1,101 @@
+/* Estilo general */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #080814; /* Fondo oscuro */
+    box-sizing: border-box;
+}
+
+/* Contenedor del logo */
+.logo-container {
+    margin-top: 50px;
+    margin-bottom: 30px; /* Ajuste del espacio entre logo y contenedor de redes */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.logo-container img {
+    width: 70vw; /* Ajusta el tamaño del logo al 50% del ancho de la pantalla */
+    max-width: 450px; /* Limita el tamaño máximo del logo */
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.3); /* Sombra suave */
+}
+
+/* Contenedor redondeado con sombra para redes sociales */
+.social-container {
+    display: flex;
+    justify-content: space-around;
+    width: 80vw; /* Ajusta el ancho del contenedor de redes al 80% de la pantalla */
+    max-width: 400px; /* Limita el tamaño máximo */
+    padding: 15px;
+    background-color: white;
+    border-radius: 20px; /* Bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); /* Sombra */
+
+    margin-bottom: 30px; /* Espacio con el botón de volver */
+}
+
+/* Estilo de los iconos de redes sociales */
+.social-icon img {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s;
+}
+
+.social-icon img:hover {
+    transform: scale(1.2); /* Efecto hover para agrandar los iconos */
+}
+
+/* Botón de Volver al Inicio */
+/* Botón de Volver al Inicio */
+.back-to-home {
+    position: fixed; /* Fija el botón en la pantalla */
+    bottom: 20px; /* Espaciado desde el fondo */
+    right: 20px; /* Espaciado desde la derecha */
+    background-color: #557eca;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.back-to-home:hover {
+    background-color: #3d5afe;
+    transform: scale(1.05);
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 768px) {
+    .logo-container img {
+        width: 70vw; /* Aumenta el tamaño del logo en pantallas más pequeñas */
+    }
+
+    .social-container {
+        width: 90vw; /* Aumenta el ancho del contenedor de redes sociales */
+    }
+
+    .social-icon img {
+        width: 35px; /* Reduce el tamaño de los iconos en pantallas pequeñas */
+        height: 35px;
+    }
+
+    .back-to-home {
+        font-size: 14px; /* Ajusta el tamaño del texto en pantallas pequeñas */
+        padding: 8px 15px;
+    }
+}
