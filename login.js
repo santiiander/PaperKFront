@@ -9,6 +9,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         password: password
     };
 
+    //Cambios en login
+
     console.log('Datos de inicio de sesión:', loginData); // Imprime los datos enviados
 
     try {
