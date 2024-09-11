@@ -6,11 +6,32 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/PaperKFront/service-worker.js')
     .then(function(reg) {
       console.log('Service Worker registered', reg);
+      console.log("Button Install")
     })
     .catch(function(error) {
       console.log('Service Worker registration failed', error);
     });
   }
+  
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Muestra tu botón de "Instalar"
+    const installButton = document.getElementById('installButton');
+    installButton.style.display = 'block';
+  
+    installButton.addEventListener('click', () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
   
 
 document.addEventListener('DOMContentLoaded', () => {
