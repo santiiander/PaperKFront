@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para obtener el token del almacenamiento local
 function getToken() {
-    console.log("App web V1 Try")
+    console.log("App web V2 Try")
     const token = localStorage.getItem('access_token');
     return token;
 }
