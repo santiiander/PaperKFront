@@ -3,7 +3,7 @@ const limit = 12; // Número de proyectos por solicitud
 let isLoading = false; // Para evitar solicitudes múltiples simultáneas
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
+    navigator.serviceWorker.register('/PaperKFront/service-worker.js')
     .then(function(reg) {
       console.log('Service Worker registered', reg);
     })
