@@ -2,6 +2,17 @@ let currentPage = 1; // Página actual
 const limit = 12; // Número de proyectos por solicitud
 let isLoading = false; // Para evitar solicitudes múltiples simultáneas
 
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then(function(reg) {
+      console.log('Service Worker registered', reg);
+    })
+    .catch(function(error) {
+      console.log('Service Worker registration failed', error);
+    });
+  }
+  
+
 document.addEventListener('DOMContentLoaded', () => {
     loadProjects(currentPage); // Carga los proyectos de la página inicial
     updateUI(); // Actualiza la UI al cargar la página
@@ -10,9 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para obtener el token del almacenamiento local
 function getToken() {
+    console.log("App web")
     const token = localStorage.getItem('access_token');
-    console.log('Token:', token); // Añade esto para verificar el token
-    console.log('Versión: V.TokenExpanded32');
     return token;
 }
 
