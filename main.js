@@ -250,3 +250,60 @@ function updateUI() {
         usernameElement.textContent = `Bienvenido, ${getUsername()}`; // Muestra el nombre de usuario
     }
 }
+
+const carouselInner = document.querySelector('.carousel-inner');
+const indicators = document.querySelectorAll('.indicator');
+
+let currentIndex = 0; // Índice del carrusel actual
+
+// Función para mostrar el slide en función del índice
+function showSlide(index) {
+    const totalSlides = carouselInner.children.length;
+    if (index >= totalSlides) {
+        currentIndex = 0;
+    } else if (index < 0) {
+        currentIndex = totalSlides - 1;
+    } else {
+        currentIndex = index;
+    }
+
+    // Mueve el carrusel
+    const offset = -currentIndex * 100;
+    carouselInner.style.transform = `translateX(${offset}%)`;
+
+    // Actualiza los indicadores activos
+    indicators.forEach((indicator, idx) => {
+        indicator.classList.toggle('active', idx === currentIndex);
+    });
+}
+
+// Función para avanzar al siguiente slide
+function nextSlide() {
+    showSlide(currentIndex + 1);
+}
+
+// Función para retroceder al slide anterior
+function prevSlide() {
+    showSlide(currentIndex - 1);
+}
+
+// Asigna los eventos a los indicadores para que sean clicables
+indicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => {
+        showSlide(index);
+    });
+});
+
+// Auto-desplazamiento del carrusel cada 3 segundos
+setInterval(nextSlide, 3000);
+
+// Inicia el carrusel en el primer slide
+showSlide(0);
+
+// Rotación de la imagen de origami al hacer scroll
+const profileImage = document.querySelector('.profile-image');
+
+window.addEventListener('scroll', function () {
+    const rotation = window.scrollY / 5; // Ajusta la velocidad de rotación según se desplace
+    profileImage.style.transform = `rotate(${rotation}deg)`;
+});
