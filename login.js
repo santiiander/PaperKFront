@@ -4,7 +4,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase
 import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js';
 
 // Obtener la configuración de Firebase desde el backend
-fetch('http://127.0.0.1:8000/firebase-config')
+fetch('https://proyectpaperk-production.up.railway.app/firebase-config')
     .then(response => response.json())
     .then(firebaseConfig => {
         // Corregir la clave privada si es necesario
@@ -43,7 +43,7 @@ fetch('http://127.0.0.1:8000/firebase-config')
             console.log('Datos de inicio de sesión:', loginData); // Imprime los datos enviados
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/usuarios/login', {
+                const response = await fetch('https://proyectpaperk-production.up.railway.app/usuarios/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ fetch('http://127.0.0.1:8000/firebase-config')
                 .then(async (result) => {
                     const idToken = await result.user.getIdToken();
 
-                    const response = await fetch('http://127.0.0.1:8000/usuarios/login-google', {
+                    const response = await fetch('https://proyectpaperk-production.up.railway.app/usuarios/login-google', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded' // Cambio a x-www-form-urlencoded
