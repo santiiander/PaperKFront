@@ -11,8 +11,10 @@
 </head>
 <body>
     <div class="container">
-        <img src="origami.png" alt="Logo">
-        <h2>Iniciar Sesión</h2>
+        <div class="text-center mb-4">
+            <img src="origami.png" alt="Logo" class="logo">
+            <h2>Iniciar Sesión</h2>
+        </div>
         <form id="loginForm">
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -31,9 +33,17 @@
                 ¿Olvidó su contraseña? <a href="reset-password.html">Restablecer contraseña</a>
             </p>
         </form>
+
+        <div class="text-center mt-3">
+            <button id="googleLogin" class="btn-google">
+                <img src="google.png" alt="Google Logo">
+                Login with Google
+            </button>
+        </div>
+        
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="login.js"></script>
+    <script src="login.js" type="module"></script>
 </body>
 </html>
