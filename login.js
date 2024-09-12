@@ -7,6 +7,7 @@ import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-
 fetch('https://proyectpaperk-production.up.railway.app/firebase-config')
     .then(response => response.json())
     .then(firebaseConfig => {
+        console.log("Working")
         // Corregir la clave privada si es necesario
         if (firebaseConfig.private_key) {
             firebaseConfig.private_key = firebaseConfig.private_key.replace('\\n', '\n');
