@@ -1,0 +1,16 @@
+fastapi
+hypercorn
+uvicorn
+sqlalchemy
+mysql-connector-python
+pydantic
+bcrypt
+aiofiles
+jinja2
+python-multipart
+pytest
+httpx
+python-jose
+PyJWT
+requests
+python-dotenv
