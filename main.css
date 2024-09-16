@@ -1,245 +1,255 @@
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-
-    color: #333;
-    background-color: #3d365a88;
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #50E3C2;
+    --background-color: #F5F7FA;
+    --text-color: #333333;
+    --accent-color: #FF6B6B;
 }
 
-/* Header Principal */
-.headerPrincipal {
-    background-color: #5c88b9;
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.headerLogin, .headerPrincipal {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.headerLogin {
     padding: 10px 0;
-    border-bottom: 2px solid #19689c;
-    overflow: hidden;
+}
+
+.ulHeader {
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    padding: 0;
+    margin: 0 20px;
+}
+
+.ulHeader li {
+    margin-left: 20px;
+}
+
+.ulHeader a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.ulHeader a:hover {
+    color: var(--accent-color);
 }
 
 .navbar {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
+    padding: 15px 20px;
 }
 
 .nav-list {
-    list-style-type: none;
+    display: flex;
+    list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 
 .nav-list li {
-    margin: 5px;
+    margin-right: 20px;
 }
 
 .nav-list a {
-    color: #f0f0f0;
-    background-color: #2e364b;
+    color: var(--text-color);
     text-decoration: none;
-    padding: 10px 20px; /* Asegura un padding uniforme */
-    display: block;
-    font-size: 15px; /* Ajusta el tamaño de la fuente para ser consistente */
-    transition: color 0.3s;
-    text-align: center;
-    min-width: 120px; /* Asegura que todos los botones tengan un ancho mínimo igual */
-    border: solid 0.5px #32504d;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
+    font-weight: 600;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
 }
 
 .nav-list a:hover {
-    color: #000000;
+    color: var(--primary-color);
 }
 
-.nav-list a:hover{
-    background-color: rgb(218, 208, 127);
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
 }
 
 .user-actions {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 
 .username {
-    color: #f0f0f0;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: transform 0.5s, color 0.3s;
-}
-
-.username:hover {
-    transform: rotateY(180deg);
-    color: #57CC99;
+    margin-right: 15px;
+    font-weight: 600;
 }
 
 .login-btn {
-    background-color: rgb(218, 208, 127);
+    background-color: var(--primary-color);
+    color: #ffffff;
     border: none;
     padding: 8px 16px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    color: #1A374D;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .login-btn:hover {
-    color: white;
-    background-color: #2e364b;
+    background-color: var(--accent-color);
 }
 
-/* Información adicional */
-.info {
-
-    background-color: #5c88b9;
-    margin: 50px;
-    padding: 10px;
-    border-radius: 15px;
-    color: #f0f0f0;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
-}
-
-/* Proyectos */
-.papersK {
-    margin: 0 auto;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0;
-    box-sizing: border-box;
-}
-
-.paper {
-    background-color: #2e364b;
-    color: #f0f0f0;
-    flex: 1 0 24.5%;
-    margin: 0;
-    max-width: 24.5%;
-    box-sizing: border-box;
-    text-align: center;
+/* Carousel Styles */
+.carousel {
+    margin: 30px 0;
     position: relative;
     overflow: hidden;
-    padding: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.paper:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
 }
 
-.project-image {
+.carousel-item img {
     width: 100%;
     height: auto;
     object-fit: cover;
 }
 
-.download-button {
-    background-image: url('descargar.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 50px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-    display: none;
-    background-color: transparent;
-    color: transparent;
-    padding: 0;
+.carousel-indicators {
     position: absolute;
-    top: 50%;
+    bottom: 20px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
 }
 
-.paper:hover .download-button {
-    display: block;
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.project-image, 
-.paper h2, 
-.paper p {
-    transition: opacity 0.3s ease;
+.indicator.active {
+    background-color: var(--primary-color);
 }
 
-.paper:hover .project-image, 
-.paper:hover h2, 
-.paper:hover p {
-    opacity: 0.5;
-}
-
-.paper:hover .download-button {
-    opacity: 1;
-}
-
-/* Imagen de perfil */
+/* Profile Image Styles */
 .profile-image-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin: 30px 0;
 }
 
 .profile-image {
-    width: 325px;
-    height: 325px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    border: 2px solid #000000;
-    transition: transform 0.3s ease;
+    border: 4px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-image:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
 }
 
-/* Header de Login */
-.headerLogin {
-    background-color: #2e364b;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
+/* Main Content Styles */
+.info {
+    background-color: #ffffff;
+    margin: 30px 50px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.hero-heading {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.hero-description {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Project Grid Styles */
+.papersK {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 30px 50px;
+}
+
+.paper {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.paper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.project-image {
     width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
-.ulHeader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+.paper h2 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin: 15px 0 10px;
+    padding: 0 15px;
 }
 
-.ulHeader a {
-    color: #f0f0f0;
-    text-decoration: none;
-    padding: 0 20px;
-    display: block;
-    transition: color 0.3s;
-    font-size: 15px;
+.paper p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    padding: 0 15px 15px;
 }
 
-.ulHeader a:hover {
-    color: black;
+.download-button {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 15px 15px;
+    width: calc(100% - 30px);
 }
 
-/* Nube */
-.nube {
-    width: 15px;
-    height: 15px;
-    margin-right: 10px;
+.download-button:hover {
+    background-color: var(--accent-color);
 }
 
-/* Popup */
+/* Popup Form Styles */
 .popup-form {
     display: none;
     position: fixed;
@@ -249,20 +259,17 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .popup-content {
-    background-color: #fefefe;
-    margin: auto;
+    background-color: #ffffff;
+    margin: 10% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border-radius: 8px;
     width: 80%;
     max-width: 500px;
-    border-radius: 10px;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .close {
@@ -270,20 +277,19 @@ body {
     float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
-    cursor: pointer;
 }
 
-/* Formulario de Proyecto */
 #proyectoForm label {
     display: block;
     margin-top: 10px;
-    font-weight: bold;
+    color: var(--text-color);
 }
 
 #proyectoForm input,
@@ -291,32 +297,124 @@ body {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
 }
 
 #proyectoForm button {
-    background-color: #57CC99;
+    background-color: var(--primary-color);
     color: white;
-    padding: 10px 20px;
     border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 #proyectoForm button:hover {
-    background-color: #45a049;
+    background-color: var(--accent-color);
 }
 
-/* Carrusel */
+/* Footer Styles */
+footer {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-list li {
+        margin: 5px 10px;
+    }
+
+    .papersK {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        padding: 20px;
+    }
+
+    .info {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .hero-heading {
+        font-size: 2rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+}
+
+/* Spinner Styles */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ... (previous styles remain unchanged) ... */
+
+/* Updated Header Styles */
+.headerLogin {
+    background-color: var(--primary-color); /* Changed to primary color */
+    padding: 10px 0;
+}
+
+.ulHeader {
+    display: flex;
+    justify-content: center; /* Changed to center */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ulHeader li {
+    margin: 0 10px; /* Adjusted margins */
+}
+
+.ulHeader a {
+    color: #ffffff; /* Changed to white for better contrast */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.ulHeader a:hover {
+    color: var(--accent-color);
+}
+
+/* ... (other styles remain unchanged) ... */
+
+/* Updated Carousel Styles */
 .carousel {
-    border-radius: 15px;
-    margin: 50px;
+    margin: 30px auto;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra sutil */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px; /* Limit the width of the carousel */
 }
 
 .carousel-inner {
@@ -325,307 +423,30 @@ body {
 }
 
 .carousel-item {
-    min-width: 100%;
-    box-sizing: border-box;
-    position: relative;
+    flex: 0 0 100%; /* Each item takes full width of the carousel */
 }
 
 .carousel-item img {
-    width: 100%;
-    display: block;
-}
-
-.carousel-indicators {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-}
-
-.indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #bbb;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.indicator.active {
-    background-color: #333;
-}
-
-/* Media Queries */
-@media (max-width: 800px) {
-    .paper {
-        flex: 1 0 49%;
-        max-width: 49%;
-    }
-
-    .nav-list a {
-        font-size: 13px;
-        padding: 8px 12px;
-    }
-
-    .profile-image {
-        width: 250px;
-        height: 250px;
-    }
-
-    .carousel-caption {
-        font-size: 16px;
-        padding: 5px 0;
-    }
-
-    .carousel-control {
-        font-size: 20px;
-        padding: 8px;
-    }
-}
-
-@media (max-width: 500px) {
-    .paper {
-        flex: 1 0 100%;
-        max-width: 100%;
-    }
-
-    .nav-list a {
-        font-size: 12px;
-        padding: 6px 10px;
-    }
-
-    .profile-image {
-        width: 200px;
-        height: 200px;
-    }
-
-    .carousel-caption {
-        font-size: 14px;
-        padding: 2px 0;
-    }
-
-    .carousel-control {
-        font-size: 18px;
-        padding: 6px;
-    }
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600; /* Usa el peso que prefieras */
-}
-
-p, a, li, span {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 400; /* Usa el peso que prefieras */
-}
-
-/* Otros estilos específicos de tu página */
-
-.container {
-    text-align: center;
-    padding: 40px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
-    max-width: 600px;
-}
-
-.hero-heading {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-.hero-description {
-    font-size: 1rem;
-    color: #000000;
-    line-height: 1.5;
-    margin-bottom: 10px;
-}
-
-/* Estilos del botón de publicación cuando se está procesando */
-#publicarBtn {
-    background-color: #57CC99;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#publicarBtn.loading {
-    background-color: #45a049;
-    cursor: not-allowed;
-    position: relative;
-    padding-left: 40px;
-    padding-right: 40px;
-}
-
-#publicarBtn.loading::after {
-    content: '';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 3px solid white;
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Estilos para bloquear la pantalla */
-.screen-blocker {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-.screen-blocker.active {
-    display: flex;
-    color: white;
-    font-size: 1.5rem;
-}
-
-
-/* Estilos para el spinner */
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    margin-left: 10px;
-    display: inline-block;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-
-/* Proyectos */
-.papersK {
-    margin: 50px;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between; /* Asegura separación uniforme entre proyectos */
-    gap: 20px; /* Espacio entre proyectos */
-    box-sizing: border-box;
-}
-
-/* Proyecto */
-.paper {
-    background-color: #2e364b;
-    color: #f0f0f0;
-    flex: 1 0 calc(33.333% - 20px); /* 3 proyectos por fila con espacio */
-    max-width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    padding: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
-    border-radius: 10px; /* Esquinas redondeadas */
-    margin-bottom: 20px; /* Espacio en la parte inferior de cada proyecto */
-}
-
-.paper:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Imagen del proyecto */
-.project-image {
     width: 100%;
     height: auto;
     object-fit: cover;
 }
 
-/* Botón de descarga */
-.download-button {
-    background-image: url('descargar.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 50px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-    display: none;
-    background-color: transparent;
-    color: transparent;
-    padding: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+/* ... (rest of the styles remain unchanged) ... */
 
-.paper:hover .download-button {
-    display: block;
-}
-
-/* Estilo de texto y elementos dentro del proyecto */
-.project-image, 
-.paper h2, 
-.paper p {
-    transition: opacity 0.3s ease;
-}
-
-.paper:hover .project-image, 
-.paper:hover h2, 
-.paper:hover p {
-    opacity: 0.5;
-}
-
-.paper:hover .download-button {
-    opacity: 1;
-}
-
-/* Media Queries */
-@media (max-width: 800px) {
-    .paper {
-        flex: 1 0 calc(50% - 20px); /* 2 proyectos por fila */
-        max-width: calc(50% - 20px);
-    }
-}
-
-@media (max-width: 500px) {
-    .paper {
-        flex: 1 0 100%; /* 1 proyecto por fila */
-        max-width: 100%;
-    }
-}
-
-/*comentario */
-
+.carousel-container {
+    margin: 0;  /* Asegura que no haya margen externo */
+    padding: 0; /* Asegura que no haya espacio interno */
+    overflow: hidden; /* Oculta cualquier contenido fuera de los límites */
+  }
+  
+  .carousel-slide img {
+    display: block; /* Elimina los espacios en blanco generados por imágenes inline */
+    width: 100%;  /* Asegura que las imágenes ocupen todo el contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+  }
+  
+  .carousel {
+    border: none; /* Elimina bordes indeseados */
+  }
+  

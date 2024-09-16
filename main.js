@@ -1,75 +1,64 @@
-let currentPage = 1; // Página actual
-const limit = 12; // Número de proyectos por solicitud
-let isLoading = false; // Para evitar solicitudes múltiples simultáneas
+let currentPage = 1;
+const limit = 12;
+let isLoading = false;
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/PaperKFront/service-worker.js')
-    .then(function(reg) {
-        console.log('Service Worker registered', reg);
-    })
-    .catch(function(error) {
-        console.log('Service Worker registration failed', error);
-    });
+        .then(function(reg) {
+            console.log('Service Worker registered', reg);
+        })
+        .catch(function(error) {
+            console.log('Service Worker registration failed', error);
+        });
 }
 
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Muestra tu botón de "Instalar"
     const installButton = document.getElementById('installButton');
-    installButton.style.display = 'block';
-  
-    installButton.addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-            }
-            deferredPrompt = null;
+    if (installButton) {
+        installButton.style.display = 'block';
+        installButton.addEventListener('click', () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+            });
         });
-    });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadProjects(currentPage); // Carga los proyectos de la página inicial
-    updateUI(); // Actualiza la UI al cargar la página
-    window.addEventListener('scroll', handleScroll); // Añade el listener para el scroll
+    loadProjects(currentPage);
+    window.addEventListener('scroll', handleScroll);
 
-    // Añade el evento al botón de logout
-    document.getElementById('logoutButton').addEventListener('click', () => {
-        handleLogout();
-    });
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+    }
 
-    console.log(getUsername()); // Depuración: Muestra el nombre de usuario almacenado
+    initializeCarousel();
 });
 
-// Función para obtener el token del almacenamiento local
 function getToken() {
     return localStorage.getItem('access_token');
 }
 
-// Función para obtener el nombre del usuario del almacenamiento local
-function getUsername() {
-    return localStorage.getItem('username');
-}
-
-// Función para cargar los proyectos desde el backend
 function loadProjects(page) {
     if (isLoading) return;
     isLoading = true;
 
     fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`, {
         headers: {
-            "Authorization": `Bearer ${getToken()}` // Incluye el token en el encabezado
+            "Authorization": `Bearer ${getToken()}`
         }
     })
     .then(response => {
         if (response.status === 401) {
-            alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('username');
-            window.location.href = 'login.html';
+            handleUnauthorized();
             return;
         }
         if (!response.ok) {
@@ -79,7 +68,7 @@ function loadProjects(page) {
     })
     .then(projects => {
         if (projects.length === 0) {
-            window.removeEventListener('scroll', handleScroll); // Elimina el listener si no hay más proyectos
+            window.removeEventListener('scroll', handleScroll);
             return;
         }
 
@@ -87,20 +76,18 @@ function loadProjects(page) {
         projects.forEach(project => {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'paper';
-            projectDiv.dataset.pdfPath = project.archivo_pdf;
-
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
-                <p><strong>Subido por:</strong> ${project.usuario_nombre}</p> <!-- Mostrar el nombre del usuario -->
+                <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
-                <button id="downloadButton-${project.id}" class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+                <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
                 <div id="loadingSpinner-${project.id}" class="spinner" style="display: none;"></div>
             `;
             container.appendChild(projectDiv);
         });
 
-        currentPage++; // Incrementa la página para la próxima carga
+        currentPage++;
         isLoading = false;
     })
     .catch(error => {
@@ -109,70 +96,61 @@ function loadProjects(page) {
     });
 }
 
-// Función para manejar el scroll y cargar más proyectos
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-        loadProjects(currentPage); // Carga los proyectos de la siguiente página
+        loadProjects(currentPage);
     }
 }
 
-// Función para descargar un proyecto con spinner
 function downloadPDF(pdfPath, projectId) {
-    const downloadButton = document.getElementById(`downloadButton-${projectId}`);
+    const downloadButton = event.target;
     const loadingSpinner = document.getElementById(`loadingSpinner-${projectId}`);
 
-    // Deshabilitar el botón de descarga y mostrar el spinner
     downloadButton.disabled = true;
     downloadButton.textContent = 'Descargando...';
     loadingSpinner.style.display = 'inline-block';
 
     fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
         headers: {
-            "Authorization": `Bearer ${getToken()}` // Incluye el token en el encabezado
+            "Authorization": `Bearer ${getToken()}`
         }
     })
     .then(response => {
         if (response.status === 401) {
-            alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('username');
-            window.location.href = 'login.html';
+            handleUnauthorized();
             return;
         }
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.blob(); // Convertir la respuesta en un blob para manejar el archivo
+        return response.blob();
     })
     .then(blob => {
-        // Crear un enlace temporal para descargar el archivo
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = pdfPath.split('/').pop(); // Asignar un nombre al archivo
+        a.download = pdfPath.split('/').pop();
         document.body.appendChild(a);
-        a.click(); // Hacer clic en el enlace para descargar
-        window.URL.revokeObjectURL(url); // Liberar el objeto URL
-        document.body.removeChild(a); // Remover el enlace del DOM
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
     })
     .catch(error => {
         console.error('Error al descargar el PDF:', error);
         alert('Error al descargar el proyecto. Por favor, intenta de nuevo.');
     })
     .finally(() => {
-        // Restaurar el estado del botón
         downloadButton.disabled = false;
         downloadButton.textContent = 'Descargar PDF';
         loadingSpinner.style.display = 'none';
     });
 }
 
-// Función para crear un nuevo proyecto
-function createProject() {
+function createProject(event) {
+    event.preventDefault();
     const form = document.querySelector('#proyectoForm');
     const formData = new FormData(form);
 
-    // Cambiar el estado del botón y mostrar el spinner
     const submitButton = document.getElementById('submitButton');
     const loadingSpinner = document.getElementById('loadingSpinner');
     submitButton.disabled = true;
@@ -183,21 +161,18 @@ function createProject() {
         method: "POST",
         body: formData,
         headers: {
-            "Authorization": `Bearer ${getToken()}` // Incluye el token en el encabezado
+            "Authorization": `Bearer ${getToken()}`
         }
     })
     .then(response => {
         if (response.status === 401) {
-            alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('username');
-            window.location.href = 'login.html';
+            handleUnauthorized();
             return;
         }
         if (response.ok) {
             alert("Proyecto creado exitosamente");
             closePopup();
-            loadProjects(currentPage); // Recargar proyectos para ver el nuevo
+            loadProjects(currentPage);
         } else {
             return response.json().then(result => {
                 throw new Error(result.detail || 'Error creando proyecto');
@@ -209,101 +184,93 @@ function createProject() {
         alert("Error al subir el proyecto. Por favor, intenta de nuevo.");
     })
     .finally(() => {
-        // Restaurar el estado del botón
         submitButton.disabled = false;
         submitButton.textContent = 'Publicar Proyecto';
         loadingSpinner.style.display = 'none';
     });
 }
 
-// Función para mostrar el popup de creación de proyecto
 function openPopup() {
     document.getElementById("popupForm").style.display = "block";
 }
 
-// Función para cerrar el popup de creación de proyecto
 function closePopup() {
     document.getElementById("popupForm").style.display = "none";
 }
 
-// Función para manejar el envío del formulario de creación de proyecto
-document.querySelector('#proyectoForm').addEventListener('submit', event => {
-    event.preventDefault();
-    if (!getToken()) {
-        alert("Por favor, inicia sesión para crear un proyecto.");
-        return;
-    }
-    createProject();
-});
-
-// Función de logout
 function handleLogout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     window.location.href = 'login.html';
 }
 
-// Mostrar el nombre del usuario en la UI
-function updateUI() {
-    const usernameElement = document.getElementById('usernameDisplay');
-    if (usernameElement) {
-        usernameElement.textContent = `Bienvenido, ${getUsername()}`; // Muestra el nombre de usuario
-    }
+function handleUnauthorized() {
+    alert("Sesión expirada. Por favor, inicia sesión de nuevo.");
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    window.location.href = 'login.html';
 }
 
-const carouselInner = document.querySelector('.carousel-inner');
-const indicators = document.querySelectorAll('.indicator');
+function initializeCarousel() {
+    const carouselInner = document.querySelector('.carousel-inner');
+    const indicators = document.querySelectorAll('.indicator');
+    let currentIndex = 0;
 
-let currentIndex = 0; // Índice del carrusel actual
-
-// Función para mostrar el slide en función del índice
-function showSlide(index) {
-    const totalSlides = carouselInner.children.length;
-    if (index >= totalSlides) {
-        currentIndex = 0;
-    } else if (index < 0) {
-        currentIndex = totalSlides - 1;
-    } else {
-        currentIndex = index;
+    function showSlide(index) {
+        const totalSlides = carouselInner.children.length;
+        currentIndex = (index + totalSlides) % totalSlides;
+        const offset = -currentIndex * 100;
+        carouselInner.style.transform = `translateX(${offset}%)`;
+        indicators.forEach((indicator, idx) => {
+            indicator.classList.toggle('active', idx === currentIndex);
+        });
     }
 
-    // Mueve el carrusel
-    const offset = -currentIndex * 100;
-    carouselInner.style.transform = `translateX(${offset}%)`;
+    function nextSlide() {
+        showSlide(currentIndex + 1);
+    }
 
-    // Actualiza los indicadores activos
-    indicators.forEach((indicator, idx) => {
-        indicator.classList.toggle('active', idx === currentIndex);
+    function prevSlide() {
+        showSlide(currentIndex - 1);
+    }
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => showSlide(index));
     });
+
+    // Add touch support for mobile devices
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carouselInner.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    carouselInner.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) {
+            nextSlide();
+        } else if (touchEndX - touchStartX > 50) {
+            prevSlide();
+        }
+    }, false);
+
+    setInterval(nextSlide, 5000);
+    showSlide(0);
 }
 
-// Función para avanzar al siguiente slide
-function nextSlide() {
-    showSlide(currentIndex + 1);
-}
-
-// Función para retroceder al slide anterior
-function prevSlide() {
-    showSlide(currentIndex - 1);
-}
-
-// Asigna los eventos a los indicadores para que sean clicables
-indicators.forEach((indicator, index) => {
-    indicator.addEventListener('click', () => {
-        showSlide(index);
-    });
-});
-
-// Auto-desplazamiento del carrusel cada 3 segundos
-setInterval(nextSlide, 3000);
-
-// Inicia el carrusel en el primer slide
-showSlide(0);
-
-// Rotación de la imagen de origami al hacer scroll
 const profileImage = document.querySelector('.profile-image');
-
 window.addEventListener('scroll', function () {
-    const rotation = window.scrollY / 5; // Ajusta la velocidad de rotación según se desplace
+    const rotation = window.scrollY / 5;
     profileImage.style.transform = `rotate(${rotation}deg)`;
 });
+
+document.querySelector('#proyectoForm').addEventListener('submit', event => {
+    event.preventDefault();
+    if (!getToken()) {
+        alert("Por favor, inicia sesión para crear un proyecto.");
+        return;
+    }
+    createProject(event);
+});
+
