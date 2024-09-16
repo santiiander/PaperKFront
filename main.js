@@ -110,16 +110,31 @@ function downloadPDF(pdfPath, projectId) {
     downloadButton.textContent = 'Descargando...';
     loadingSpinner.style.display = 'inline-block';
 
-    fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
+    // Incrementar el contador de descargas
+    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}`, {
+        method: 'POST',
         headers: {
-            "Authorization": `Bearer ${getToken()}`
+            "Authorization": `Bearer ${getToken()}`,
+            "Content-Type": "application/json"
         }
     })
     .then(response => {
         if (response.status === 401) {
             handleUnauthorized();
-            return;
+            throw new Error('Unauthorized');
         }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Una vez que el contador se ha incrementado, proceder a descargar el archivo PDF
+        return fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
+            headers: {
+                "Authorization": `Bearer ${getToken()}`
+            }
+        });
+    })
+    .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -145,6 +160,7 @@ function downloadPDF(pdfPath, projectId) {
         loadingSpinner.style.display = 'none';
     });
 }
+
 
 function createProject(event) {
     event.preventDefault();
