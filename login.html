@@ -22,9 +22,15 @@
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-
             <button type="submit" class="btn btn-primary btn-block">Login</button>
             <p class="text-center mt-3">
                 ¿No tiene cuenta? <a href="register.html">¡Regístrese!</a>
@@ -44,6 +50,8 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
     <script src="login.js" type="module"></script>
+
 </body>
 </html>

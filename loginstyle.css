@@ -100,3 +100,21 @@ body {
 .text-center {
     text-align: center;
 }
+
+/* Elimina el ícono de mostrar/ocultar contraseña en navegadores WebKit */
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-password-toggle-button {
+    display: none;
+}
+
+/* Para otros navegadores que podrían tener botones incorporados */
+input[type="password"]::-ms-clear,
+input[type="password"]::-ms-reveal {
+    display: none;
+}
+
+/* Elimina cualquier pseudo-elemento que pudiera estar mostrando íconos */
+input[type="password"]::after,
+input[type="password"]::before {
+    display: none !important;
+}
