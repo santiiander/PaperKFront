@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadUserProjects();
-    updateUserUI(); // Actualiza la UI al cargar la página
+    updateUserUI();
 
-    // Asignar el evento al botón de confirmación en el popup
     document.getElementById('confirmDeleteButton').addEventListener('click', () => {
         const projectId = document.getElementById('deletePopup').dataset.projectId;
         if (projectId) {
@@ -10,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Asignar el evento al botón de cierre del popup
     document.querySelectorAll('.close').forEach(btn => {
         btn.addEventListener('click', () => {
             closePopup('deletePopup');
@@ -18,12 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Función para obtener el token del almacenamiento local
 function getToken() {
     return localStorage.getItem('access_token');
 }
 
-// Función para cargar los proyectos del usuario desde el backend
 function loadUserProjects() {
     fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/mi-proyecto", {
         headers: {
@@ -38,7 +34,7 @@ function loadUserProjects() {
     })
     .then(projects => {
         const container = document.getElementById('userProjectsContainer');
-        container.innerHTML = ''; // Limpia el contenedor antes de agregar los nuevos proyectos
+        container.innerHTML = '';
 
         if (!Array.isArray(projects)) {
             throw new Error("La respuesta no es un array de proyectos.");
@@ -47,7 +43,7 @@ function loadUserProjects() {
         projects.forEach(project => {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'project-item';
-            projectDiv.dataset.projectId = project.id; // Guardar el ID del proyecto en un atributo
+            projectDiv.dataset.projectId = project.id;
 
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
@@ -58,51 +54,56 @@ function loadUserProjects() {
             container.appendChild(projectDiv);
         });
     })
-    .catch(error => console.error('Error al cargar los proyectos:', error));
+    .catch(error => {
+        console.error('Error al cargar los proyectos:', error);
+        alert('Error al cargar los proyectos. Por favor, intenta de nuevo más tarde.');
+    });
 }
 
-// Función para mostrar el popup de confirmación de eliminación
 function showDeletePopup(projectId) {
     const popup = document.getElementById('deletePopup');
-    popup.dataset.projectId = projectId; // Guardar el ID del proyecto en un atributo del popup
-    popup.style.display = 'flex'; // Mostrar el popup
+    popup.dataset.projectId = projectId;
+    popup.style.display = 'flex';
 }
 
-// Función para cerrar el popup
 function closePopup(popupId) {
-    document.getElementById(popupId).style.display = 'none'; // Ocultar el popup
+    document.getElementById(popupId).style.display = 'none';
 }
 
-// Función para eliminar un proyecto
 function deleteProject(projectId) {
     fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}`, {
         method: 'DELETE',
         headers: {
-            "Authorization": `Bearer ${getToken()}`
+            "Authorization": `Bearer ${getToken()}`,
+            "Content-Type": "application/json"
         }
     })
     .then(response => {
         if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('No autorizado. Por favor, inicia sesión de nuevo.');
+            }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(result => {
         alert('Proyecto eliminado con éxito.');
-        loadUserProjects(); // Recargar la lista de proyectos después de la eliminación
-        closePopup('deletePopup'); // Ocultar el popup después de eliminar
+        loadUserProjects();
+        closePopup('deletePopup');
     })
-    .catch(error => console.error('Error al eliminar el proyecto:', error));
+    .catch(error => {
+        console.error('Error al eliminar el proyecto:', error);
+        alert(`Error al eliminar el proyecto: ${error.message}`);
+    });
 }
 
-// Función para actualizar la UI del usuario (eliminada la lógica de logout)
 function updateUserUI() {
-    const emailElement = document.getElementById('userEmail');
+    const emailElement = document.getElementById('userEmails');
     const userEmail = getUserEmail();
     emailElement.textContent = userEmail ? userEmail : 'Usuario no autenticado';
 }
 
-// Función para obtener el correo electrónico del usuario del almacenamiento local
 function getUserEmail() {
     return localStorage.getItem('username');
 }

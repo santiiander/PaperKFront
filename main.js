@@ -1,6 +1,7 @@
 let currentPage = 1;
 const limit = 12;
 let isLoading = false;
+let isAdult = false;
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/PaperKFront/service-worker.js')
@@ -33,6 +34,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadProjects(currentPage);
+    loadFeaturedProjects();
     window.addEventListener('scroll', handleScroll);
 
     const logoutButton = document.getElementById('logoutButton');
@@ -41,17 +43,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeCarousel();
+
+    const ageVerificationToggle = document.getElementById('ageVerificationToggle');
+    if (ageVerificationToggle) {
+        isAdult = localStorage.getItem('isAdult') === 'true';
+        ageVerificationToggle.checked = isAdult;
+        ageVerificationToggle.addEventListener('change', handleAgeVerificationToggle);
+    }
 });
 
 function getToken() {
     return localStorage.getItem('access_token');
 }
 
+function handleAgeVerificationToggle(event) {
+    if (event.target.checked && !localStorage.getItem('ageConfirmed')) {
+        if (confirm('¿Eres mayor de edad? Este contenido puede ser explícito.')) {
+            isAdult = true;
+            localStorage.setItem('ageConfirmed', 'true');
+        } else {
+            event.target.checked = false;
+            isAdult = false;
+        }
+    } else {
+        isAdult = event.target.checked;
+    }
+    localStorage.setItem('isAdult', isAdult);
+    currentPage = 1;
+    document.getElementById('projectsContainer').innerHTML = '';
+    loadProjects(currentPage);
+}
+
 function loadProjects(page) {
     if (isLoading) return;
     isLoading = true;
 
-    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`, {
+    const url = isAdult
+        ? `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer-explicitos?page=${page}&size=${limit}`
+        : `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`;
+
+    fetch(url, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -81,7 +112,13 @@ function loadProjects(page) {
                 <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
-                <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+                <div class="project-actions">
+                    <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+                    <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
+                        <span class="heart-icon">❤️</span>
+                        <span class="likes-count">${project.likes_count}</span>
+                    </button>
+                </div>
                 <div id="loadingSpinner-${project.id}" class="spinner" style="display: none;"></div>
             `;
             container.appendChild(projectDiv);
@@ -94,6 +131,83 @@ function loadProjects(page) {
         console.error('Error al cargar los proyectos:', error);
         isLoading = false;
     });
+}
+
+function loadFeaturedProjects() {
+    console.log('Loading featured projects...');
+    fetch('https://proyectpaperk-production.up.railway.app/proyectos/proyectos/destacados', {
+        headers: {
+            "Authorization": `Bearer ${getToken()}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Featured projects data:', data);
+        if (data.most_liked) {
+            displayFeaturedProject(data.most_liked, 'mostLikedProject', 'Proyecto más popular');
+        } else {
+            console.log('No most liked project found');
+        }
+        if (data.latest) {
+            displayFeaturedProject(data.latest, 'latestProject', 'Proyecto más reciente');
+        } else {
+            console.log('No latest project found');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading featured projects:', error);
+        document.getElementById('featuredProjects').style.display = 'none';
+    });
+}
+
+function displayFeaturedProject(project, containerId, title) {
+    if (!project) {
+        console.log(`No project data for ${containerId}`);
+        return;
+    }
+
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`Container not found: ${containerId}`);
+        return;
+    }
+
+    container.innerHTML = `
+        <h3>${title}</h3>
+        <h4>${project.nombre}</h4>
+        <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
+        <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+        <p>${project.descripcion}</p>
+        <div class="project-actions">
+            <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+            <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
+                <span class="heart-icon">❤️</span>
+                <span class="likes-count">${project.likes_count}</span>
+            </button>
+        </div>
+    `;
+}
+
+function toggleLike(projectId) {
+    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}/like`, {
+        method: 'POST',
+        headers: {
+            "Authorization": `Bearer ${getToken()}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const likeButton = document.querySelector(`button[onclick="toggleLike('${projectId}')"]`);
+        const likesCountSpan = likeButton.querySelector('.likes-count');
+        likesCountSpan.textContent = data.likes_count;
+        likeButton.classList.toggle('liked', data.liked);
+    })
+    .catch(error => console.error('Error toggling like:', error));
 }
 
 function handleScroll() {
@@ -110,7 +224,6 @@ function downloadPDF(pdfPath, projectId) {
     downloadButton.textContent = 'Descargando...';
     loadingSpinner.style.display = 'inline-block';
 
-    // Incrementar el contador de descargas
     fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}`, {
         method: 'POST',
         headers: {
@@ -127,7 +240,6 @@ function downloadPDF(pdfPath, projectId) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Una vez que el contador se ha incrementado, proceder a descargar el archivo PDF
         return fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
             headers: {
                 "Authorization": `Bearer ${getToken()}`
@@ -160,7 +272,6 @@ function downloadPDF(pdfPath, projectId) {
         loadingSpinner.style.display = 'none';
     });
 }
-
 
 function createProject(event) {
     event.preventDefault();
@@ -228,41 +339,64 @@ function handleUnauthorized() {
 }
 
 function initializeCarousel() {
-    const carouselInner = document.querySelector('.carousel-inner');
-    const indicators = document.querySelectorAll('.indicator');
+    const carousel = document.querySelector('.carousel');
+    const carouselInner = carousel.querySelector('.carousel-inner');
+    const items = carousel.querySelectorAll('.carousel-item');
+    const prevButton = document.querySelector('.carousel-control.prev');
+    const nextButton = document.querySelector('.carousel-control.next');
+    const indicatorsContainer = document.querySelector('.carousel-indicators');
+    
     let currentIndex = 0;
+    const totalItems = items.length;
 
-    function showSlide(index) {
-        const totalSlides = carouselInner.children.length;
-        currentIndex = (index + totalSlides) % totalSlides;
-        const offset = -currentIndex * 100;
+    // Clear existing indicators
+    indicatorsContainer.innerHTML = '';
+
+    // Create indicators
+    items.forEach((_, index) => {
+        const indicator = document.createElement('div');
+        indicator.classList.add('indicator');
+        indicator.addEventListener('click', () => goToSlide(index));
+        indicatorsContainer.appendChild(indicator);
+    });
+
+    const indicators = indicatorsContainer.querySelectorAll('.indicator');
+
+    function goToSlide(index) {
+        currentIndex = index;
+        const offset = -index * 100;
         carouselInner.style.transform = `translateX(${offset}%)`;
-        indicators.forEach((indicator, idx) => {
-            indicator.classList.toggle('active', idx === currentIndex);
-        });
+        updateIndicators();
     }
 
     function nextSlide() {
-        showSlide(currentIndex + 1);
+        currentIndex = (currentIndex + 1) % totalItems;
+        goToSlide(currentIndex);
     }
 
     function prevSlide() {
-        showSlide(currentIndex - 1);
+        currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+        goToSlide(currentIndex);
     }
 
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => showSlide(index));
-    });
+    function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+    }
 
-    // Add touch support for mobile devices
+    nextButton.addEventListener('click', nextSlide);
+    prevButton.addEventListener('click', prevSlide);
+
+    // Touch events for mobile
     let touchStartX = 0;
     let touchEndX = 0;
 
-    carouselInner.addEventListener('touchstart', (e) => {
+    carousel.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
     }, false);
 
-    carouselInner.addEventListener('touchend', (e) => {
+    carousel.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
         if (touchStartX - touchEndX > 50) {
             nextSlide();
@@ -271,9 +405,24 @@ function initializeCarousel() {
         }
     }, false);
 
-    setInterval(nextSlide, 5000);
-    showSlide(0);
+    // Auto-play
+    let autoPlayInterval = setInterval(nextSlide, 5000);
+
+    // Pause auto-play on hover
+    carousel.addEventListener('mouseenter', () => {
+        clearInterval(autoPlayInterval);
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+        autoPlayInterval = setInterval(nextSlide, 5000);
+    });
+
+    // Initial setup
+    goToSlide(0);
 }
+
+// Call the function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeCarousel);
 
 const profileImage = document.querySelector('.profile-image');
 window.addEventListener('scroll', function () {
@@ -289,4 +438,3 @@ document.querySelector('#proyectoForm').addEventListener('submit', event => {
     }
     createProject(event);
 });
-
