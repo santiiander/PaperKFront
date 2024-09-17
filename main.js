@@ -33,6 +33,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const ageVerificationToggle = document.getElementById('ageVerificationToggle');
+    if (ageVerificationToggle) {
+        isAdult = localStorage.getItem('isAdult') === 'true';
+        ageVerificationToggle.checked = isAdult;
+        ageVerificationToggle.addEventListener('change', handleAgeVerificationToggle);
+    }
+
     loadProjects(currentPage);
     loadFeaturedProjects();
     window.addEventListener('scroll', handleScroll);
@@ -43,19 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeCarousel();
-
-    const ageVerificationToggle = document.getElementById('ageVerificationToggle');
-    if (ageVerificationToggle) {
-        isAdult = localStorage.getItem('isAdult') === 'true';
-        ageVerificationToggle.checked = isAdult;
-        ageVerificationToggle.addEventListener('change', handleAgeVerificationToggle);
-    }
 });
 
 function getToken() {
     return localStorage.getItem('access_token');
 }
-//Comentario para poder realizar push
 
 function handleAgeVerificationToggle(event) {
     if (event.target.checked && !localStorage.getItem('ageConfirmed')) {
@@ -70,9 +69,9 @@ function handleAgeVerificationToggle(event) {
         isAdult = event.target.checked;
     }
     localStorage.setItem('isAdult', isAdult);
-    currentPage = 1;
-    document.getElementById('projectsContainer').innerHTML = '';
-    loadProjects(currentPage);
+    
+    // Recargar la página después de cambiar el estado
+    window.location.reload();
 }
 
 function loadProjects(page) {
@@ -80,7 +79,7 @@ function loadProjects(page) {
     isLoading = true;
 
     const url = isAdult
-        ? `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer-explicitos?page=${page}&size=${limit}`
+        ? `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/sensibles?page=${page}&size=${limit}`
         : `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`;
 
     fetch(url, {
@@ -105,23 +104,29 @@ function loadProjects(page) {
         }
 
         const container = document.getElementById('projectsContainer');
+        if (page === 1) {
+            container.innerHTML = '';
+        }
+        
         projects.forEach(project => {
-            const projectDiv = document.createElement('div');
-            projectDiv.className = 'paper';
-            projectDiv.innerHTML = `
-                <h2>${project.nombre}</h2>
-                <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
-                <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
-                <p>${project.descripcion}</p>
-                <div class="project-actions">
-                    <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
-                    <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
-                        <span class="heart-icon">❤️</span>
-                        <span class="likes-count">${project.likes_count}</span>
-                    </button>
-                </div>
-            `;
-            container.appendChild(projectDiv);
+            if ((isAdult && project.contenido_sensible) || (!isAdult && !project.contenido_sensible)) {
+                const projectDiv = document.createElement('div');
+                projectDiv.className = 'paper';
+                projectDiv.innerHTML = `
+                    <h2>${project.nombre}</h2>
+                    <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
+                    <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+                    <p>${project.descripcion}</p>
+                    <div class="project-actions">
+                        <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
+                        <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
+                            <span class="heart-icon">❤️</span>
+                            <span class="likes-count">${project.likes_count}</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(projectDiv);
+            }
         });
 
         currentPage++;
@@ -220,7 +225,6 @@ function handleScroll() {
 function downloadPDF(pdfPath, projectId) {
     const downloadButton = event.target;
     
-    // Check if the loading spinner exists, create it if it doesn't
     let loadingSpinner = document.getElementById(`loadingSpinner-${projectId}`);
     if (!loadingSpinner) {
         loadingSpinner = document.createElement('div');
@@ -288,6 +292,8 @@ function createProject(event) {
     const form = document.querySelector('#proyectoForm');
     const formData = new FormData(form);
 
+    formData.append('contenido_sensible', form.contenido_sensible.checked);
+
     const submitButton = document.getElementById('submitButton');
     const loadingSpinner = document.getElementById('loadingSpinner');
     submitButton.disabled = true;
@@ -309,6 +315,8 @@ function createProject(event) {
         if (response.ok) {
             alert("Proyecto creado exitosamente");
             closePopup();
+            currentPage = 1;
+            document.getElementById('projectsContainer').innerHTML = '';
             loadProjects(currentPage);
         } else {
             return response.json().then(result => {
@@ -359,10 +367,8 @@ function initializeCarousel() {
     let currentIndex = 0;
     const totalItems = items.length;
 
-    // Clear existing indicators
     indicatorsContainer.innerHTML = '';
 
-    // Create indicators
     items.forEach((_, index) => {
         const indicator = document.createElement('div');
         indicator.classList.add('indicator');
@@ -398,7 +404,6 @@ function initializeCarousel() {
     nextButton.addEventListener('click', nextSlide);
     prevButton.addEventListener('click', prevSlide);
 
-    // Touch events for mobile
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -415,10 +420,8 @@ function initializeCarousel() {
         }
     }, false);
 
-    // Auto-play
     let autoPlayInterval = setInterval(nextSlide, 5000);
 
-    // Pause auto-play on hover
     carousel.addEventListener('mouseenter', () => {
         clearInterval(autoPlayInterval);
     });
@@ -427,11 +430,9 @@ function initializeCarousel() {
         autoPlayInterval = setInterval(nextSlide, 5000);
     });
 
-    // Initial setup
     goToSlide(0);
 }
 
-// Call the function when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeCarousel);
 
 const profileImage = document.querySelector('.profile-image');
@@ -466,7 +467,6 @@ function openModal(id, nombre, usuario_nombre, descripcion, imagen, archivo_pdf)
     modal.style.display = 'block';
 }
 
-// Close the modal when clicking outside of it
 window.onclick = function(event) {
     const modal = document.getElementById('projectModal');
     if (event.target == modal) {
@@ -474,7 +474,6 @@ window.onclick = function(event) {
     }
 }
 
-// Close the modal when clicking the close button
 document.querySelector('.close').onclick = function() {
     document.getElementById('projectModal').style.display = 'none';
 }

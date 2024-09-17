@@ -993,3 +993,132 @@ input:checked + .slider:before {
         width: 50%;
     }
 }
+
+
+/* Age Verification Toggle Styles */
+.age-verification-toggle {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+    margin-right: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 22px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+.toggle-label {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Responsive styles for the toggle */
+@media (max-width: 768px) {
+    .age-verification-toggle {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .age-verification-toggle {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .switch {
+        margin-right: 5px;
+    }
+
+    .toggle-label {
+        font-size: 12px;
+    }
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 5px;
+}
+
+.custom-checkbox {
+
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+    color: black;
+    background-color: #726d9c;
+}
+
+.custom-checkbox:checked {
+    background-color: var(--primary-color);
+    color: black;
+}
+
+.custom-checkbox:checked::before {
+    content: '\2714';
+    font-size: 14px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-group label {
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
