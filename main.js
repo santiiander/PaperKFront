@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function getToken() {
     return localStorage.getItem('access_token');
 }
+//Comentario para poder realizar push
 
 function handleAgeVerificationToggle(event) {
     if (event.target.checked && !localStorage.getItem('ageConfirmed')) {
