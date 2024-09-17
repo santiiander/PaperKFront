@@ -113,13 +113,12 @@ function loadProjects(page) {
                 <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
                 <div class="project-actions">
-                    <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
+                    <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
                     <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
                         <span class="heart-icon">❤️</span>
                         <span class="likes-count">${project.likes_count}</span>
                     </button>
                 </div>
-                <div id="loadingSpinner-${project.id}" class="spinner" style="display: none;"></div>
             `;
             container.appendChild(projectDiv);
         });
@@ -190,6 +189,7 @@ function displayFeaturedProject(project, containerId, title) {
                 <span class="likes-count">${project.likes_count}</span>
             </button>
         </div>
+        <div id="loadingSpinner-${project.id}" class="spinner" style="display: none;"></div>
     `;
 }
 
@@ -218,7 +218,16 @@ function handleScroll() {
 
 function downloadPDF(pdfPath, projectId) {
     const downloadButton = event.target;
-    const loadingSpinner = document.getElementById(`loadingSpinner-${projectId}`);
+    
+    // Check if the loading spinner exists, create it if it doesn't
+    let loadingSpinner = document.getElementById(`loadingSpinner-${projectId}`);
+    if (!loadingSpinner) {
+        loadingSpinner = document.createElement('div');
+        loadingSpinner.id = `loadingSpinner-${projectId}`;
+        loadingSpinner.className = 'spinner';
+        loadingSpinner.style.display = 'none';
+        downloadButton.parentNode.insertBefore(loadingSpinner, downloadButton.nextSibling);
+    }
 
     downloadButton.disabled = true;
     downloadButton.textContent = 'Descargando...';
@@ -438,3 +447,33 @@ document.querySelector('#proyectoForm').addEventListener('submit', event => {
     }
     createProject(event);
 });
+
+function openModal(id, nombre, usuario_nombre, descripcion, imagen, archivo_pdf) {
+    const modal = document.getElementById('projectModal');
+    const modalContent = document.getElementById('modalProjectContent');
+    modalContent.innerHTML = `
+        <div class="modal-project-details">
+            <img src="https://proyectpaperk-production.up.railway.app/${imagen}" alt="Imagen del Proyecto" class="modal-project-image">
+            <div class="modal-project-info">
+                <h2 class="modal-project-title">${nombre}</h2>
+                <p class="modal-project-author"><strong>Subido por:</strong> ${usuario_nombre}</p>
+                <p class="modal-project-description">${descripcion}</p>
+                <button class="modal-download-btn" onclick="downloadPDF('${archivo_pdf}', '${id}')">Descargar PDF</button>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+// Close the modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('projectModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close the modal when clicking the close button
+document.querySelector('.close').onclick = function() {
+    document.getElementById('projectModal').style.display = 'none';
+}
