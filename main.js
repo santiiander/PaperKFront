@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeCarousel();
 });
-
+//Test porque no anda y no se que pasa xd 
 
 function getToken() {
     return localStorage.getItem('access_token');
