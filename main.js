@@ -2,7 +2,6 @@ let currentPage = 1;
 const limit = 12;
 let isLoading = false;
 let isAdult = false;
-
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/PaperKFront/service-worker.js')
         .then(function(reg) {
@@ -12,6 +11,8 @@ if ('serviceWorker' in navigator) {
             console.log('Service Worker registration failed', error);
         });
 }
+
+
 
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeCarousel();
 });
+
 
 function getToken() {
     return localStorage.getItem('access_token');
@@ -181,7 +183,6 @@ function displayFeaturedProject(project, containerId, title) {
         console.error(`Container not found: ${containerId}`);
         return;
     }
-
     container.innerHTML = `
         <h3>${title}</h3>
         <h4>${project.nombre}</h4>
@@ -215,7 +216,6 @@ function toggleLike(projectId) {
     })
     .catch(error => console.error('Error toggling like:', error));
 }
-
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
         loadProjects(currentPage);
