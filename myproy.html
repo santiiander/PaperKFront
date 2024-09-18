@@ -4,29 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Proyectos</title>
-    <link rel='stylesheet' type='text/css' media='screen' href='myproy.css'>
+    <link rel="stylesheet" href="myproy.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Mis Proyectos</h1>
-        <div id="userInfo">
-            <span id="userEmails"></span>
-            
+    <div class="container">
+        <header>
+            <h1>Mis Proyectos</h1>
+            <div id="userInfo">
+                <span id="userEmails"></span>
+            </div>
+            <button id="backToHub" onclick="window.location.href='index.html'">Volver al HUB</button>
+        </header>
+
+        <div id="userProjectsContainer" class="projects-grid">
+            <!-- Los proyectos del usuario se cargarán aquí -->
         </div>
-        <button id="backToHub" onclick="window.location.href='index.html'">Volver al HUB</button>
-    </header>
 
-    <div id="userProjectsContainer" class="projects-grid">
-        <!-- Los proyectos del usuario se cargarán aquí -->
-    </div>
-
-    <!-- Popup de confirmación de eliminación -->
-    <div id="deletePopup" class="popup-form">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup('deletePopup')">&times;</span>
-            <h2>¿Estás seguro de que quieres eliminar este proyecto?</h2>
-            <button id="confirmDeleteButton">Eliminar</button>
-            <button onclick="closePopup('deletePopup')">Cancelar</button>
+        <!-- Popup de confirmación de eliminación -->
+        <div id="deletePopup" class="popup-form">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('deletePopup')">&times;</span>
+                <h2>¿Estás seguro de que quieres eliminar este proyecto?</h2>
+                <div class="popup-actions">
+                    <button id="confirmDeleteButton">Eliminar</button>
+                    <button onclick="closePopup('deletePopup')">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 

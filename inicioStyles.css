@@ -1,119 +1,109 @@
-/* Estilo general */
-body {
-    font-family: 'Poppins', sans-serif;
+:root {
+    --bg-gradient-from: #1a202c;
+    --bg-gradient-to: #2a4365;
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --text-color: #ffffff;
+    --button-bg: #3182ce;
+    --button-hover: #2c5282;
+}
+
+* {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #080814;
-    /* Fondo oscuro */
     box-sizing: border-box;
 }
 
-/*texto*/
-
-/* Contenedor del logo */
-.logo-container {
-    margin-top: 50px;
-    margin-bottom: 30px;
-    /* Ajuste del espacio entre logo y contenedor de redes */
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.logo-container img {
-    width: 70vw;
-    /* Ajusta el tamaño del logo al 50% del ancho de la pantalla */
-    max-width: 450px;
-    /* Limita el tamaño máximo del logo */
-    height: auto;
-    border-radius: 15px;
-}
-
-/* Contenedor redondeado con sombra para redes sociales */
-.social-container {
-    display: flex;
-    justify-content: space-around;
-    width: 80vw;
-    /* Ajusta el ancho del contenedor de redes al 80% de la pantalla */
-    max-width: 400px;
-    /* Limita el tamaño máximo */
-    padding: 15px;
-    background-color: white;
-    border-radius: 20px;
-    /* Bordes redondeados */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-    /* Sombra */
-
-    margin-bottom: 30px;
-    /* Espacio con el botón de volver */
-}
-
-/* Estilo de los iconos de redes sociales */
-.social-icon img {
-    width: 40px;
-    height: 40px;
-    transition: transform 0.3s;
-}
-
-.social-icon img:hover {
-    transform: scale(1.2);
-    /* Efecto hover para agrandar los iconos */
-}
-
-/* Botón de Volver al Inicio */
-/* Botón de Volver al Inicio */
-.back-to-home {
-    position: fixed;
-    /* Fija el botón en la pantalla */
-    bottom: 20px;
-    /* Espaciado desde el fondo */
-    right: 20px;
-    /* Espaciado desde la derecha */
-    background-color: #557eca;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    text-decoration: none;
-    font-size: 16px;
+body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
+    color: var(--text-color);
+    padding: 1rem;
 }
 
-.back-to-home:hover {
-    background-color: #3d5afe;
+.container {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    width: 100%;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.logo-container {
+    padding: 1.5rem;
+}
+
+.sponsor-logo {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.social-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.3);
     transform: scale(1.05);
 }
 
-/* Media Queries para pantallas pequeñas */
-@media (max-width: 768px) {
-    .logo-container img {
-        width: 70vw;
-        /* Aumenta el tamaño del logo en pantallas más pequeñas */
-    }
+.social-link svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--text-color);
+}
 
-    .social-container {
-        width: 90vw;
-        /* Aumenta el ancho del contenedor de redes sociales */
-    }
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 9999px;
+    transition: background-color 0.3s ease;
+}
 
-    .social-icon img {
-        width: 35px;
-        /* Reduce el tamaño de los iconos en pantallas pequeñas */
-        height: 35px;
-    }
+.back-button:hover {
+    background-color: var(--button-hover);
+}
 
-    .back-to-home {
-        font-size: 14px;
-        /* Ajusta el tamaño del texto en pantallas pequeñas */
-        padding: 8px 15px;
+.back-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .container {
+        max-width: 100%;
     }
 }

@@ -1,221 +1,209 @@
-/* Estilos generales */
-body {
-    font-family: Arial, sans-serif;
+:root {
+    --bg-gradient-from: #1a202c;
+    --bg-gradient-to: #2a4365;
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --text-color: #ffffff;
+    --button-bg: #3182ce;
+    --button-hover: #2c5282;
+    --delete-button: #e53e3e;
+    --delete-button-hover: #c53030;
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #f2f2f2;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
 }
 
 header {
-    background-color: #5c88b9;
-    color: white;
-    padding: 20px;
     text-align: center;
-    border-bottom: 1px solid #0057b3fb;
+    margin-bottom: 2rem;
 }
 
 header h1 {
-    margin: 0;
-    font-size: 24px;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 #userInfo {
-    margin-top: 10px;
-    font-size: 16px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
 }
 
 #backToHub {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
+    background-color: var(--button-bg);
+    color: var(--text-color);
     border: none;
-    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
 }
 
 #backToHub:hover {
-    background-color: #003d7a;
+    background-color: var(--button-hover);
 }
 
-/* Contenedor de proyectos */
 .projects-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
-/* Elemento del proyecto */
 .project-item {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    width: calc(25% - 20px); /* 4 proyectos por fila en pantallas grandes */
-    box-sizing: border-box;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
     position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    transition: transform 0.3s ease;
 }
 
 .project-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.project-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
+.project-item h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
 }
 
-/* Botón de eliminar con imagen */
+.project-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.project-item p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
 .delete-button {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    border: none;
+    top: 0.5rem;
+    right: 0.5rem;
     background: none;
-    transition: opacity 0.3s;
-}
-
-.project-item:hover .delete-button {
-    opacity: 1;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
 .delete-button:hover {
-    opacity: 0.8;
+    opacity: 1;
 }
 
-/* Popup Formulario */
+.delete-button img {
+    width: 24px;
+    height: 24px;
+}
+
 .popup-form {
-    display: none; /* Ocultar el popup por defecto */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
 .popup-content {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    max-width: 400px;
     width: 90%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .popup-content h2 {
-    margin-top: 0;
-    font-size: 18px;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
-.popup-content .close {
+.close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    color: #007bff;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
-.popup-content .close:hover {
-    color: #0056b3;
+.close:hover {
+    opacity: 1;
 }
 
-.popup-content button {
-    margin: 5px 0;
-    background-color: #007bff;
-    color: white;
+.popup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.popup-actions button {
+    padding: 0.5rem 1rem;
     border: none;
-    padding: 10px;
-    border-radius: 5px;
+    border-radius: 0.25rem;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.popup-content button:hover {
-    background-color: #0056b3;
-}
-
-/* Popup de confirmación de eliminación */
-#deletePopup {
-    display: none; /* Ocultar el popup por defecto */
-}
-
-#deletePopup .popup-content {
-    width: 90%;
-    max-width: 400px;
+    transition: background-color 0.3s ease;
 }
 
 #confirmDeleteButton {
-    background-color: #FF4C4C;
+    background-color: var(--delete-button);
+    color: var(--text-color);
 }
 
 #confirmDeleteButton:hover {
-    background-color: #FF2C2C;
+    background-color: var(--delete-button-hover);
 }
 
-/* Estilos para pantallas más pequeñas */
-@media (max-width: 1200px) {
-    .project-item {
-        width: calc(33.333% - 20px); /* 3 proyectos por fila en pantallas medianas */
-    }
+.popup-actions button:last-child {
+    background-color: var(--button-bg);
+    color: var(--text-color);
 }
 
-@media (max-width: 900px) {
-    .project-item {
-        width: calc(50% - 20px); /* 2 proyectos por fila en pantallas pequeñas */
-    }
+.popup-actions button:last-child:hover {
+    background-color: var(--button-hover);
 }
 
-@media (max-width: 600px) {
-    .project-item {
-        width: calc(100% - 20px); /* 1 proyecto por fila en pantallas muy pequeñas */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
     }
 
     header h1 {
-        font-size: 20px;
-    }
-
-    #backToHub {
-        font-size: 14px;
-        padding: 8px 16px;
+        font-size: 2rem;
     }
 
     .projects-grid {
-        padding: 10px;
-    }
-    
-    .project-item {
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .popup-content {
-        width: 95%;
-    }
-
-    .popup-content h2 {
-        font-size: 16px;
-    }
-
-    .popup-content button {
-        padding: 8px;
-        font-size: 14px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
     }
 }

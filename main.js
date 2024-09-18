@@ -477,3 +477,221 @@ window.onclick = function(event) {
 document.querySelector('.close').onclick = function() {
     document.getElementById('projectModal').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const chatbotContainer = document.getElementById('chatbot-container');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const userInput = document.getElementById('user-input');
+    const chatBubble = document.getElementById('chat-bubble');
+    const minimizeBtn = document.getElementById('minimize-btn');
+    const chatbotHeader = document.getElementById('chatbot-header');
+
+    const botResponses = [
+        {
+            keywords: ['hola', 'buenas', 'saludos', 'hey', 'ola', 'que tal', 'qué tal', 'buenos días', 'buenas tardes', 'buenas noches', 'hi', 'hello', 'bienvenido', 'welcome'],
+            response: "¡Hola! Bienvenido a ProyectPaperK. ¿En qué puedo ayudarte hoy?"
+        },
+        {
+            keywords: ['que es', 'qué es', 'proyectpaperk', 'plataforma', 'sitio', 'web', 'página', 'acerca de', 'about', 'información', 'info', 'tell me about', 'cuéntame sobre', 'explícame', 'explicame'],
+            response: "ProyectPaperK es una plataforma donde los amantes del origami pueden subir y compartir sus proyectos en formato PDF junto con una imagen representativa. Aquí puedes explorar, compartir y conectar con la comunidad de origami."
+        },
+        {
+            keywords: ['como funciona', 'cómo funciona', 'usar', 'utilizar', 'funcionamiento', 'uso', 'guía', 'tutorial', 'instrucciones', 'pasos', 'how to', 'cómo puedo', 'como puedo'],
+            response: "Puedes explorar proyectos de origami, subir tus propios proyectos, descargar PDFs de proyectos que te interesen, y dar 'me gusta' a los proyectos que más te gusten. La plataforma es intuitiva y fácil de usar."
+        },
+        {
+            keywords: ['subir', 'publicar', 'crear', 'nuevo proyecto', 'compartir', 'aportar', 'contribuir', 'añadir', 'agregar', 'upload', 'post', 'share'],
+            response: "Para subir un proyecto, haz clic en 'Publicar' en la barra de navegación. Necesitarás proporcionar un nombre para tu proyecto, una descripción, subir un archivo PDF con las instrucciones y una imagen representativa. ¡Es fácil y rápido!"
+        },
+        {
+            keywords: ['destacados', 'populares', 'recientes', 'mejores', 'top', 'trending', 'tendencia', 'moda', 'featured', 'popular', 'recent', 'best'],
+            response: "Los proyectos destacados incluyen el proyecto más popular (con más 'me gusta') y el proyecto más reciente subido a la plataforma. Estos se muestran en la página principal para que puedas descubrir contenido interesante rápidamente."
+        },
+        {
+            keywords: ['descargar', 'bajar', 'obtener pdf', 'conseguir', 'adquirir', 'download', 'get', 'obtain', 'pdf'],
+            response: "Para descargar un proyecto, haz clic en el botón 'Descargar PDF' en la tarjeta del proyecto o en la vista detallada del proyecto. Todos los PDFs son de descarga gratuita y libre."
+        },
+        {
+            keywords: ['explicito', 'explícito', 'adultos', 'sensible', 'nsfw', 'contenido para adultos', 'mature', 'adult content', 'sensitive'],
+            response: "El contenido explícito se refiere a proyectos que pueden contener temas o imágenes para adultos. Puedes activar o desactivar la visualización de este contenido usando el interruptor 'Contenido explícito' en la barra de navegación. Por defecto, este contenido está oculto."
+        },
+        {
+            keywords: ['iniciar sesion', 'iniciar sesión', 'login', 'entrar', 'acceder', 'ingresar', 'sign in', 'log in', 'access'],
+            response: "Puedes iniciar sesión haciendo clic en 'Iniciar sesión' en la parte superior de la página. Si aún no tienes una cuenta, primero deberás registrarte. Una vez que hayas iniciado sesión, podrás subir proyectos y dar 'me gusta' a otros proyectos."
+        },
+        {
+            keywords: ['registrar', 'registro', 'crear cuenta', 'nueva cuenta', 'sign up', 'register', 'join', 'unirse', 'formar parte'],
+            response: "Para registrarte, haz clic en 'Registrarse' en la parte superior de la página y sigue las instrucciones para crear una nueva cuenta. Necesitarás proporcionar un nombre de usuario, correo electrónico y contraseña. ¡Es gratis y solo toma un minuto!"
+        },
+        {
+            keywords: ['ayuda', 'ayudar', 'asistencia', 'soporte', 'apoyo', 'help', 'support', 'assistance'],
+            response: "Estoy aquí para ayudarte con cualquier pregunta sobre ProyectPaperK. Puedes preguntarme sobre cómo funciona la plataforma, cómo subir proyectos, cómo descargar PDFs, y más. ¿En qué más puedo ayudarte?"
+        },
+        {
+            keywords: ['gracias', 'agradecido', 'thanks', 'thank you', 'ty', 'thx', 'muchas gracias', 'te lo agradezco'],
+            response: "¡De nada! Estoy aquí para ayudarte. Si tienes más preguntas, no dudes en hacerlas. ¡Disfruta tu estancia en ProyectPaperK!"
+        },
+        {
+            keywords: ['precio', 'costo', 'pagar', 'comprar', 'adquirir', 'price', 'cost', 'pay', 'purchase', 'buy', 'cuánto cuesta', 'cuanto cuesta', 'valor', 'tarifa'],
+            response: "¡Buenas noticias! Todo en ProyectPaperK es completamente gratuito. Puedes explorar, descargar y compartir proyectos sin costo alguno. Disfruta tu estancia y toda la creatividad que ofrece nuestra comunidad de origami."
+        },
+        {
+            keywords: ['persona', 'humano', 'representante', 'alguien', 'contacto', 'hablar con alguien', 'chat', 'person', 'human', 'representative', 'contact', 'talk to someone'],
+            response: "Entiendo que a veces prefieras hablar con una persona. Aunque soy un asistente virtual, puedo ayudarte con la mayoría de las preguntas. Sin embargo, si necesitas hablar con alguien del equipo, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a>. Estaremos encantados de ayudarte personalmente."
+        }
+    ];
+
+    function minimizeChat() {
+        chatbotContainer.classList.add('minimized');
+        setTimeout(() => {
+            chatBubble.classList.add('visible');
+        }, 300);
+    }
+
+    function maximizeChat() {
+        chatBubble.classList.remove('visible');
+        setTimeout(() => {
+            chatbotContainer.classList.remove('minimized');
+        }, 300);
+    }
+
+    minimizeBtn.addEventListener('click', minimizeChat);
+    chatBubble.addEventListener('click', maximizeChat);
+    chatbotHeader.addEventListener('click', function(e) {
+        if (e.target !== minimizeBtn) {
+            minimizeChat();
+        }
+    });
+
+    window.sendMessage = function() {
+        const message = userInput.value.trim().toLowerCase();
+        if (message) {
+            addMessage(message, 'user-message');
+            userInput.value = '';
+
+            setTimeout(() => {
+                const response = getBotResponse(message);
+                addMessage(response, 'bot-message');
+            }, 500);
+        }
+    }
+
+    function addMessage(message, className) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', className);
+        if (className === 'bot-message') {
+            messageElement.innerHTML = message;
+        } else {
+            messageElement.textContent = message;
+        }
+        chatbotMessages.appendChild(messageElement);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+        let bestMatch = null;
+        let highestScore = 0;
+
+        for (const item of botResponses) {
+            const score = getMatchScore(message, item.keywords);
+            if (score > highestScore) {
+                highestScore = score;
+                bestMatch = item;
+            }
+        }
+
+        if (bestMatch && highestScore > 0.5) {
+            return bestMatch.response;
+        }
+
+        return "Lo siento, no entiendo completamente tu pregunta. ¿Podrías reformularla o preguntar sobre cómo funciona ProyectPaperK, cómo subir proyectos, o cómo descargar PDFs?";
+    }
+
+    function getMatchScore(message, keywords) {
+        let maxScore = 0;
+        for (const keyword of keywords) {
+            const score = similarity(message, keyword);
+            if (score > maxScore) {
+                maxScore = score;
+            }
+        }
+        return maxScore;
+    }
+
+    function similarity(s1, s2) {
+        let longer = s1;
+        let shorter = s2;
+        if (s1.length < s2.length) {
+            longer = s2;
+            shorter = s1;
+        }
+        const longerLength = longer.length;
+        if (longerLength === 0) {
+            return 1.0;
+        }
+        return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+    }
+
+    function editDistance(s1, s2) {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        const costs = new Array();
+        for (let i = 0; i <= s1.length; i++) {
+            let lastValue = i;
+            for (let j = 0; j <= s2.length; j++) {
+                if (i === 0)
+                    costs[j] = j;
+                else {
+                    if (j > 0) {
+                        let newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+                            newValue = Math.min(Math.min(newValue, lastValue),
+                                costs[j]) + 1;
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+            }
+            if (i > 0)
+                costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+    }
+
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Mensaje de bienvenida y minimización automática
+    setTimeout(() => {
+        addMessage("¡Hola! Soy el asistente virtual de ProyectPaperK. ¿En qué puedo ayudarte hoy?", 'bot-message');
+    }, 1000);
+
+    setTimeout(minimizeChat, 5000);
+});
+
+
+function openPopup() {
+    document.getElementById('popupForm').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('popupForm').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('ageVerificationToggle');
+    
+    toggle.addEventListener('change', function() {
+        if (this.checked) {
+            console.log('Contenido explícito activado');
+            // Add your logic for when explicit content is enabled
+        } else {
+            console.log('Contenido explícito desactivado');
+            // Add your logic for when explicit content is disabled
+        }
+    });
+});
