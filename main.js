@@ -486,61 +486,132 @@ document.addEventListener('DOMContentLoaded', () => {
     const minimizeBtn = document.getElementById('minimize-btn');
     const chatbotHeader = document.getElementById('chatbot-header');
 
+    // Respuestas del bot mejoradas
     const botResponses = [
+        // Saludos
         {
             keywords: ['hola', 'buenas', 'saludos', 'hey', 'ola', 'que tal', 'qué tal', 'buenos días', 'buenas tardes', 'buenas noches', 'hi', 'hello', 'bienvenido', 'welcome'],
             response: "¡Hola! Bienvenido a ProyectPaperK. ¿En qué puedo ayudarte hoy?"
         },
+        // Descripción de ProyectPaperK
         {
             keywords: ['que es', 'qué es', 'proyectpaperk', 'plataforma', 'sitio', 'web', 'página', 'acerca de', 'about', 'información', 'info', 'tell me about', 'cuéntame sobre', 'explícame', 'explicame'],
-            response: "ProyectPaperK es una plataforma donde los amantes del origami pueden subir y compartir sus proyectos en formato PDF junto con una imagen representativa. Aquí puedes explorar, compartir y conectar con la comunidad de origami."
+            response: "ProyectPaperK es una plataforma donde los amantes del origami pueden subir y compartir sus proyectos en formato PDF junto con una imagen representativa."
         },
+        // Cómo funciona
         {
-            keywords: ['como funciona', 'cómo funciona', 'usar', 'utilizar', 'funcionamiento', 'uso', 'guía', 'tutorial', 'instrucciones', 'pasos', 'how to', 'cómo puedo', 'como puedo'],
-            response: "Puedes explorar proyectos de origami, subir tus propios proyectos, descargar PDFs de proyectos que te interesen, y dar 'me gusta' a los proyectos que más te gusten. La plataforma es intuitiva y fácil de usar."
+            keywords: ['cómo funciona', 'como funciona', 'uso', 'guía', 'instrucciones', 'pasos', 'how to', 'cómo puedo', 'como puedo'],
+            response: "Puedes explorar proyectos de origami, subir tus propios proyectos, descargar PDFs de proyectos que te interesen, y dar 'me gusta' a los proyectos que más te gusten."
         },
+        // Cómo subir un proyecto
         {
-            keywords: ['subir', 'publicar', 'crear', 'nuevo proyecto', 'compartir', 'aportar', 'contribuir', 'añadir', 'agregar', 'upload', 'post', 'share'],
-            response: "Para subir un proyecto, haz clic en 'Publicar' en la barra de navegación. Necesitarás proporcionar un nombre para tu proyecto, una descripción, subir un archivo PDF con las instrucciones y una imagen representativa. ¡Es fácil y rápido!"
+            keywords: ['subir', 'cargar', 'publicar', 'compartir', 'nuevo proyecto', 'añadir', 'upload', 'post', 'share'],
+            response: "Para subir un proyecto, inicia sesión, haz clic en 'Publicar' en la barra de navegación, y sigue las instrucciones para subir tu PDF e imagen representativa."
         },
+        // Descargar proyectos
         {
-            keywords: ['destacados', 'populares', 'recientes', 'mejores', 'top', 'trending', 'tendencia', 'moda', 'featured', 'popular', 'recent', 'best'],
-            response: "Los proyectos destacados incluyen el proyecto más popular (con más 'me gusta') y el proyecto más reciente subido a la plataforma. Estos se muestran en la página principal para que puedas descubrir contenido interesante rápidamente."
+            keywords: ['descargar', 'obtener pdf', 'download', 'get pdf'],
+            response: "Para descargar un proyecto, haz clic en el botón 'Descargar PDF' en la tarjeta del proyecto. ¡Es fácil y gratuito!"
         },
+        // Iniciar sesión
         {
-            keywords: ['descargar', 'bajar', 'obtener pdf', 'conseguir', 'adquirir', 'download', 'get', 'obtain', 'pdf'],
-            response: "Para descargar un proyecto, haz clic en el botón 'Descargar PDF' en la tarjeta del proyecto o en la vista detallada del proyecto. Todos los PDFs son de descarga gratuita y libre."
+            keywords: ['login', 'iniciar sesión', 'acceder', 'entrar', 'sign in'],
+            response: "Haz clic en 'Iniciar sesión' en la parte superior para ingresar. Si no tienes cuenta, regístrate primero."
         },
+        // Registrarse
         {
-            keywords: ['explicito', 'explícito', 'adultos', 'sensible', 'nsfw', 'contenido para adultos', 'mature', 'adult content', 'sensitive'],
-            response: "El contenido explícito se refiere a proyectos que pueden contener temas o imágenes para adultos. Puedes activar o desactivar la visualización de este contenido usando el interruptor 'Contenido explícito' en la barra de navegación. Por defecto, este contenido está oculto."
+            keywords: ['registrarse', 'crear cuenta', 'unirse', 'sign up', 'register'],
+            response: "Para registrarte, haz clic en 'Registrarse' en la parte superior, y sigue las instrucciones para crear una cuenta. ¡Es gratis y rápido!"
         },
+        // Precio
         {
-            keywords: ['iniciar sesion', 'iniciar sesión', 'login', 'entrar', 'acceder', 'ingresar', 'sign in', 'log in', 'access'],
-            response: "Puedes iniciar sesión haciendo clic en 'Iniciar sesión' en la parte superior de la página. Si aún no tienes una cuenta, primero deberás registrarte. Una vez que hayas iniciado sesión, podrás subir proyectos y dar 'me gusta' a otros proyectos."
+            keywords: ['precio', 'costo', 'tarifa', 'pagar', 'cost', 'price'],
+            response: "Todo en ProyectPaperK es completamente gratuito. ¡Disfruta explorando y compartiendo tus proyectos!"
         },
-        {
-            keywords: ['registrar', 'registro', 'crear cuenta', 'nueva cuenta', 'sign up', 'register', 'join', 'unirse', 'formar parte'],
-            response: "Para registrarte, haz clic en 'Registrarse' en la parte superior de la página y sigue las instrucciones para crear una nueva cuenta. Necesitarás proporcionar un nombre de usuario, correo electrónico y contraseña. ¡Es gratis y solo toma un minuto!"
-        },
-        {
-            keywords: ['ayuda', 'ayudar', 'asistencia', 'soporte', 'apoyo', 'help', 'support', 'assistance'],
-            response: "Estoy aquí para ayudarte con cualquier pregunta sobre ProyectPaperK. Puedes preguntarme sobre cómo funciona la plataforma, cómo subir proyectos, cómo descargar PDFs, y más. ¿En qué más puedo ayudarte?"
-        },
-        {
-            keywords: ['gracias', 'agradecido', 'thanks', 'thank you', 'ty', 'thx', 'muchas gracias', 'te lo agradezco'],
-            response: "¡De nada! Estoy aquí para ayudarte. Si tienes más preguntas, no dudes en hacerlas. ¡Disfruta tu estancia en ProyectPaperK!"
-        },
-        {
-            keywords: ['precio', 'costo', 'pagar', 'comprar', 'adquirir', 'price', 'cost', 'pay', 'purchase', 'buy', 'cuánto cuesta', 'cuanto cuesta', 'valor', 'tarifa'],
-            response: "¡Buenas noticias! Todo en ProyectPaperK es completamente gratuito. Puedes explorar, descargar y compartir proyectos sin costo alguno. Disfruta tu estancia y toda la creatividad que ofrece nuestra comunidad de origami."
-        },
+        // Persona de contacto
         {
             keywords: ['persona', 'humano', 'representante', 'alguien', 'contacto', 'hablar con alguien', 'chat', 'person', 'human', 'representative', 'contact', 'talk to someone'],
             response: "Entiendo que a veces prefieras hablar con una persona. Aunque soy un asistente virtual, puedo ayudarte con la mayoría de las preguntas. Sin embargo, si necesitas hablar con alguien del equipo, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a>. Estaremos encantados de ayudarte personalmente."
+        },
+        // Problemas de acceso
+        {
+            keywords: ['no puedo entrar', 'no funciona login', 'problema acceso', 'login error', 'error iniciar sesión', 'login not working'],
+            response: "Si tienes problemas para iniciar sesión, intenta restablecer tu contraseña haciendo clic en '¿Olvidaste tu contraseña?' en la página de inicio de sesión. Si el problema persiste, contacta con nosotros para recibir ayuda."
+        },
+        // Recuperar contraseña
+        {
+            keywords: ['olvidé contraseña', 'recuperar contraseña', 'restablecer contraseña', 'forgot password', 'reset password'],
+            response: "Para restablecer tu contraseña, haz clic en '¿Olvidaste tu contraseña?' en la página de inicio de sesión y sigue las instrucciones."
+        },
+        // Funcionalidades
+        {
+            keywords: ['qué puedo hacer', 'funciones', 'qué puedo hacer aquí', 'qué ofrece', 'características', 'features'],
+            response: "En ProyectPaperK puedes explorar proyectos de origami, subir los tuyos propios, descargar proyectos en PDF, y dar 'me gusta' a los proyectos que más te gusten. También puedes personalizar tu perfil y ver estadísticas de tus proyectos."
+        },
+        // Cómo dar "Me gusta"
+        {
+            keywords: ['me gusta', 'like', 'dar me gusta', 'cómo dar me gusta', 'like a project'],
+            response: "Para dar 'me gusta' a un proyecto, simplemente haz clic en el icono de corazón en la tarjeta del proyecto. ¡Es una manera genial de apoyar a otros creadores!"
+        },
+        // Estadísticas de proyectos
+        {
+            keywords: ['estadísticas', 'stats', 'cómo ver estadísticas', 'ver estadísticas de mis proyectos', 'project stats'],
+            response: "Puedes ver las estadísticas de tus proyectos desde la sección 'Mis proyectos' en tu perfil. Te mostrará cuántas veces ha sido descargado y cuántos 'me gusta' ha recibido."
+        },
+        // Acerca de origami
+        {
+            keywords: ['qué es origami', 'origami', 'sobre origami', 'acerca de origami', 'información origami'],
+            response: "El origami es el arte japonés de doblar papel para crear figuras o formas. En ProyectPaperK, puedes explorar y compartir proyectos que muestran la belleza y creatividad del origami."
+        },
+        // Materiales para origami
+        {
+            keywords: ['materiales', 'qué necesito', 'materiales origami', 'qué papel usar', 'tipo de papel', 'materials for origami'],
+            response: "Para hacer origami, lo principal es usar papel. Puedes usar papel normal o papel especial para origami, que es más delgado y fácil de doblar. ¡No necesitas mucho más, solo tus manos y creatividad!"
+        },
+        // Dificultad de los proyectos
+        {
+            keywords: ['dificultad', 'nivel', 'qué nivel', 'difícil', 'fácil', 'projects difficulty'],
+            response: "En ProyectPaperK encontrarás proyectos de diferentes niveles de dificultad, desde principiantes hasta avanzados. Puedes filtrar los proyectos según la dificultad que prefieras."
+        },
+        // Cómo comentar proyectos
+        {
+            keywords: ['comentar', 'dejar comentario', 'cómo comentar', 'comment', 'leave comment'],
+            response: "Actualmente no contamos con un sistema de comentarios, pero puedes apoyar a los creadores dando 'me gusta' a sus proyectos y compartiéndolos con otros."
+        },
+        // Cómo buscar proyectos
+        {
+            keywords: ['buscar', 'encontrar', 'cómo buscar', 'how to search', 'find projects'],
+            response: "Para buscar proyectos, utiliza la barra de búsqueda en la parte superior de la página. Puedes buscar por nombre, dificultad, o tipo de proyecto."
+        },
+        // Privacidad y seguridad
+        {
+            keywords: ['privacidad', 'seguridad', 'datos personales', 'privacy', 'security', 'personal data'],
+            response: "En ProyectPaperK nos tomamos muy en serio la privacidad y seguridad de tus datos. Puedes leer nuestra política de privacidad para más detalles sobre cómo protegemos tu información."
+        },
+        // Términos y condiciones
+        {
+            keywords: ['términos', 'condiciones', 'legal', 'terms', 'conditions', 'legal terms'],
+            response: "Puedes revisar nuestros términos y condiciones haciendo clic en el enlace correspondiente en el pie de página del sitio."
+        },
+        // Proyectos populares
+        {
+            keywords: ['proyectos populares', 'más populares', 'top projects', 'trending projects'],
+            response: "Para ver los proyectos más populares, visita la sección 'Proyectos populares' en la página principal. Allí verás los proyectos más descargados y con más 'me gusta'."
+        },
+        // Contacto
+        {
+            keywords: ['contacto', 'cómo contactar', 'ayuda', 'soporte', 'support', 'help', 'contact','persona','contactar','contacto','asistencia'],
+            response: "Si necesitas ayuda, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a> o en nuestra sección de contacto en el sitio web."
+        },
+        // Test Versionado 
+        {
+            keywords:["VersionTest"],
+            response: "Version BOT V2"
         }
     ];
+    
 
+    // Función para minimizar y maximizar el chatbot
     function minimizeChat() {
         chatbotContainer.classList.add('minimized');
         setTimeout(() => {
@@ -555,6 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
+    // Eventos de minimización/maximización
     minimizeBtn.addEventListener('click', minimizeChat);
     chatBubble.addEventListener('click', maximizeChat);
     chatbotHeader.addEventListener('click', function(e) {
@@ -563,6 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Función para enviar el mensaje del usuario
     window.sendMessage = function() {
         const message = userInput.value.trim().toLowerCase();
         if (message) {
@@ -576,6 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Función para añadir mensajes al chat
     function addMessage(message, className) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', className);
@@ -588,6 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
 
+    // Función para obtener la respuesta del bot
     function getBotResponse(message) {
         let bestMatch = null;
         let highestScore = 0;
@@ -600,13 +675,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Si se encuentra una buena coincidencia
         if (bestMatch && highestScore > 0.5) {
             return bestMatch.response;
         }
 
-        return "Lo siento, no entiendo completamente tu pregunta. ¿Podrías reformularla o preguntar sobre cómo funciona ProyectPaperK, cómo subir proyectos, o cómo descargar PDFs?";
+        // Si no se encuentra una coincidencia
+        return "Lo siento, no entiendo completamente tu pregunta. Prueba reformulando o pregunta sobre cómo funciona ProyectPaperK.";
     }
 
+    // Función para calcular el puntaje de coincidencia entre el mensaje del usuario y las palabras clave
     function getMatchScore(message, keywords) {
         let maxScore = 0;
         for (const keyword of keywords) {
@@ -618,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return maxScore;
     }
 
+    // Función para calcular la similitud entre dos cadenas
     function similarity(s1, s2) {
         let longer = s1;
         let shorter = s2;
@@ -632,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
     }
 
+    // Función para calcular la distancia de edición (Levenshtein distance)
     function editDistance(s1, s2) {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
@@ -659,6 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return costs[s2.length];
     }
 
+    // Enviar mensaje al presionar Enter
     userInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             sendMessage();
@@ -672,6 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(minimizeChat, 5000);
 });
+
 
 
 function openPopup() {
