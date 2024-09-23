@@ -11,7 +11,53 @@ if ('serviceWorker' in navigator) {
             console.log('Service Worker registration failed', error);
         });
 }
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingProgress = document.querySelector('.loading-progress');
+    
+    // Verificar si la animación ya se ha mostrado en esta sesión
+    if (sessionStorage.getItem('animationShown')) {
+        loadingScreen.style.display = 'none';
+        return;
+    }
 
+    let progress = 0;
+
+    function simulateLoading() {
+        if (progress < 100) {
+            progress += Math.random() * 10;
+            progress = Math.min(progress, 100);
+            loadingProgress.style.width = `${progress}%`;
+            setTimeout(simulateLoading, 200);
+        } else {
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.visibility = 'hidden';
+                // Marcar la animación como mostrada para esta sesión
+                sessionStorage.setItem('animationShown', 'true');
+            }, 500);
+        }
+    }
+
+    simulateLoading();
+});
+
+// Función de cierre de sesión actualizada
+function handleLogout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    // Limpiar el sessionStorage para que la animación se muestre en el próximo inicio de sesión
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+}
+
+// Asegúrate de que esta función esté vinculada al botón de cierre de sesión
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+    }
+});
 
 
 let deferredPrompt;
@@ -606,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Test Versionado 
         {
             keywords:["VersionTest"],
-            response: "Version BOT V2"
+            response: "Version BOT V3"
         }
     ];
     
