@@ -956,3 +956,53 @@ footer {
       transform: scale(1);
   }
 }
+
+/* Search Bar Styles */
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  justify-content: center;
+}
+
+#searchInput {
+  background-color: var(--background-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  width: 200px;
+  transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+  width: 220px;
+}
+
+#searchInput::placeholder {
+  color: #999;
+}
+
+/* Responsive design for search bar */
+@media (max-width: 768px) {
+  .search-container {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  #searchInput {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  #searchInput {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}

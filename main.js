@@ -2,6 +2,8 @@ let currentPage = 1;
 const limit = 12;
 let isLoading = false;
 let isAdult = false;
+let allProjects = [];
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/PaperKFront/service-worker.js')
         .then(function(reg) {
@@ -11,11 +13,11 @@ if ('serviceWorker' in navigator) {
             console.log('Service Worker registration failed', error);
         });
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     const loadingScreen = document.getElementById('loading-screen');
     const loadingProgress = document.querySelector('.loading-progress');
     
-    // Verificar si la animación ya se ha mostrado en esta sesión
     if (sessionStorage.getItem('animationShown')) {
         loadingScreen.style.display = 'none';
         return;
@@ -33,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loadingScreen.style.opacity = '0';
                 loadingScreen.style.visibility = 'hidden';
-                // Marcar la animación como mostrada para esta sesión
                 sessionStorage.setItem('animationShown', 'true');
             }, 500);
         }
@@ -42,23 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
     simulateLoading();
 });
 
-// Función de cierre de sesión actualizada
 function handleLogout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
-    // Limpiar el sessionStorage para que la animación se muestre en el próximo inicio de sesión
     sessionStorage.clear();
     window.location.href = 'login.html';
 }
 
-// Asegúrate de que esta función esté vinculada al botón de cierre de sesión
 document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
     }
 });
-
 
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -97,8 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeCarousel();
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            searchProjects();
+        });
+    }
 });
-//Test porque no anda y no se que pasa xd 
 
 function getToken() {
     return localStorage.getItem('access_token');
@@ -118,7 +121,6 @@ function handleAgeVerificationToggle(event) {
     }
     localStorage.setItem('isAdult', isAdult);
     
-    // Recargar la página después de cambiar el estado
     window.location.reload();
 }
 
@@ -151,31 +153,9 @@ function loadProjects(page) {
             return;
         }
 
-        const container = document.getElementById('projectsContainer');
-        if (page === 1) {
-            container.innerHTML = '';
-        }
-        
-        projects.forEach(project => {
-            if ((isAdult && project.contenido_sensible) || (!isAdult && !project.contenido_sensible)) {
-                const projectDiv = document.createElement('div');
-                projectDiv.className = 'paper';
-                projectDiv.innerHTML = `
-                    <h2>${project.nombre}</h2>
-                    <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
-                    <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
-                    <p>${project.descripcion}</p>
-                    <div class="project-actions">
-                        <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
-                        <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
-                            <span class="heart-icon">❤️</span>
-                            <span class="likes-count">${project.likes_count}</span>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(projectDiv);
-            }
-        });
+        allProjects = allProjects.concat(projects);
+
+        displayProjects(projects);
 
         currentPage++;
         isLoading = false;
@@ -184,6 +164,45 @@ function loadProjects(page) {
         console.error('Error al cargar los proyectos:', error);
         isLoading = false;
     });
+}
+
+function displayProjects(projects) {
+    const container = document.getElementById('projectsContainer');
+    
+    projects.forEach(project => {
+        if ((isAdult && project.contenido_sensible) || (!isAdult && !project.contenido_sensible)) {
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'paper';
+            projectDiv.innerHTML = `
+                <h2>${project.nombre}</h2>
+                <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
+                <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+                <p>${project.descripcion}</p>
+                <div class="project-actions">
+                    <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
+                    <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
+                        <span class="heart-icon">❤️</span>
+                        <span class="likes-count">${project.likes_count}</span>
+                    </button>
+                </div>
+            `;
+            container.appendChild(projectDiv);
+        }
+    });
+}
+
+function searchProjects() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredProjects = allProjects.filter(project => 
+        project.nombre.toLowerCase().includes(searchTerm) ||
+        project.descripcion.toLowerCase().includes(searchTerm) ||
+        project.usuario_nombre.toLowerCase().includes(searchTerm)
+    );
+
+    const container = document.getElementById('projectsContainer');
+    container.innerHTML = '';
+
+    displayProjects(filteredProjects);
 }
 
 function loadFeaturedProjects() {
@@ -262,6 +281,7 @@ function toggleLike(projectId) {
     })
     .catch(error => console.error('Error toggling like:', error));
 }
+
 function handleScroll() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
         loadProjects(currentPage);
@@ -387,12 +407,6 @@ function openPopup() {
 
 function closePopup() {
     document.getElementById("popupForm").style.display = "none";
-}
-
-function handleLogout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('username');
-    window.location.href = 'login.html';
 }
 
 function handleUnauthorized() {
@@ -532,124 +546,99 @@ document.addEventListener('DOMContentLoaded', () => {
     const minimizeBtn = document.getElementById('minimize-btn');
     const chatbotHeader = document.getElementById('chatbot-header');
 
-    // Respuestas del bot mejoradas
     const botResponses = [
-        // Saludos
         {
             keywords: ['hola', 'buenas', 'saludos', 'hey', 'ola', 'que tal', 'qué tal', 'buenos días', 'buenas tardes', 'buenas noches', 'hi', 'hello', 'bienvenido', 'welcome'],
             response: "¡Hola! Bienvenido a ProyectPaperK. ¿En qué puedo ayudarte hoy?"
         },
-        // Descripción de ProyectPaperK
         {
             keywords: ['que es', 'qué es', 'proyectpaperk', 'plataforma', 'sitio', 'web', 'página', 'acerca de', 'about', 'información', 'info', 'tell me about', 'cuéntame sobre', 'explícame', 'explicame'],
             response: "ProyectPaperK es una plataforma donde los amantes del origami pueden subir y compartir sus proyectos en formato PDF junto con una imagen representativa."
         },
-        // Cómo funciona
         {
             keywords: ['cómo funciona', 'como funciona', 'uso', 'guía', 'instrucciones', 'pasos', 'how to', 'cómo puedo', 'como puedo'],
             response: "Puedes explorar proyectos de origami, subir tus propios proyectos, descargar PDFs de proyectos que te interesen, y dar 'me gusta' a los proyectos que más te gusten."
         },
-        // Cómo subir un proyecto
         {
             keywords: ['subir', 'cargar', 'publicar', 'compartir', 'nuevo proyecto', 'añadir', 'upload', 'post', 'share'],
             response: "Para subir un proyecto, inicia sesión, haz clic en 'Publicar' en la barra de navegación, y sigue las instrucciones para subir tu PDF e imagen representativa."
         },
-        // Descargar proyectos
         {
             keywords: ['descargar', 'obtener pdf', 'download', 'get pdf'],
             response: "Para descargar un proyecto, haz clic en el botón 'Descargar PDF' en la tarjeta del proyecto. ¡Es fácil y gratuito!"
         },
-        // Iniciar sesión
         {
             keywords: ['login', 'iniciar sesión', 'acceder', 'entrar', 'sign in'],
             response: "Haz clic en 'Iniciar sesión' en la parte superior para ingresar. Si no tienes cuenta, regístrate primero."
         },
-        // Registrarse
         {
             keywords: ['registrarse', 'crear cuenta', 'unirse', 'sign up', 'register'],
             response: "Para registrarte, haz clic en 'Registrarse' en la parte superior, y sigue las instrucciones para crear una cuenta. ¡Es gratis y rápido!"
         },
-        // Precio
         {
             keywords: ['precio', 'costo', 'tarifa', 'pagar', 'cost', 'price'],
             response: "Todo en ProyectPaperK es completamente gratuito. ¡Disfruta explorando y compartiendo tus proyectos!"
         },
-        // Persona de contacto
         {
             keywords: ['persona', 'humano', 'representante', 'alguien', 'contacto', 'hablar con alguien', 'chat', 'person', 'human', 'representative', 'contact', 'talk to someone'],
             response: "Entiendo que a veces prefieras hablar con una persona. Aunque soy un asistente virtual, puedo ayudarte con la mayoría de las preguntas. Sin embargo, si necesitas hablar con alguien del equipo, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a>. Estaremos encantados de ayudarte personalmente."
         },
-        // Problemas de acceso
         {
             keywords: ['no puedo entrar', 'no funciona login', 'problema acceso', 'login error', 'error iniciar sesión', 'login not working'],
             response: "Si tienes problemas para iniciar sesión, intenta restablecer tu contraseña haciendo clic en '¿Olvidaste tu contraseña?' en la página de inicio de sesión. Si el problema persiste, contacta con nosotros para recibir ayuda."
         },
-        // Recuperar contraseña
         {
             keywords: ['olvidé contraseña', 'recuperar contraseña', 'restablecer contraseña', 'forgot password', 'reset password'],
             response: "Para restablecer tu contraseña, haz clic en '¿Olvidaste tu contraseña?' en la página de inicio de sesión y sigue las instrucciones."
         },
-        // Funcionalidades
         {
             keywords: ['qué puedo hacer', 'funciones', 'qué puedo hacer aquí', 'qué ofrece', 'características', 'features'],
             response: "En ProyectPaperK puedes explorar proyectos de origami, subir los tuyos propios, descargar proyectos en PDF, y dar 'me gusta' a los proyectos que más te gusten. También puedes personalizar tu perfil y ver estadísticas de tus proyectos."
         },
-        // Cómo dar "Me gusta"
         {
             keywords: ['me gusta', 'like', 'dar me gusta', 'cómo dar me gusta', 'like a project'],
             response: "Para dar 'me gusta' a un proyecto, simplemente haz clic en el icono de corazón en la tarjeta del proyecto. ¡Es una manera genial de apoyar a otros creadores!"
         },
-        // Estadísticas de proyectos
         {
             keywords: ['estadísticas', 'stats', 'cómo ver estadísticas', 'ver estadísticas de mis proyectos', 'project stats'],
             response: "Puedes ver las estadísticas de tus proyectos desde la sección 'Mis proyectos' en tu perfil. Te mostrará cuántas veces ha sido descargado y cuántos 'me gusta' ha recibido."
         },
-        // Acerca de origami
         {
             keywords: ['qué es origami', 'origami', 'sobre origami', 'acerca de origami', 'información origami'],
             response: "El origami es el arte japonés de doblar papel para crear figuras o formas. En ProyectPaperK, puedes explorar y compartir proyectos que muestran la belleza y creatividad del origami."
         },
-        // Materiales para origami
         {
             keywords: ['materiales', 'qué necesito', 'materiales origami', 'qué papel usar', 'tipo de papel', 'materials for origami'],
             response: "Para hacer origami, lo principal es usar papel. Puedes usar papel normal o papel especial para origami, que es más delgado y fácil de doblar. ¡No necesitas mucho más, solo tus manos y creatividad!"
         },
-        // Dificultad de los proyectos
         {
             keywords: ['dificultad', 'nivel', 'qué nivel', 'difícil', 'fácil', 'projects difficulty'],
             response: "En ProyectPaperK encontrarás proyectos de diferentes niveles de dificultad, desde principiantes hasta avanzados. Puedes filtrar los proyectos según la dificultad que prefieras."
         },
-        // Cómo comentar proyectos
         {
             keywords: ['comentar', 'dejar comentario', 'cómo comentar', 'comment', 'leave comment'],
             response: "Actualmente no contamos con un sistema de comentarios, pero puedes apoyar a los creadores dando 'me gusta' a sus proyectos y compartiéndolos con otros."
         },
-        // Cómo buscar proyectos
         {
             keywords: ['buscar', 'encontrar', 'cómo buscar', 'how to search', 'find projects'],
             response: "Para buscar proyectos, utiliza la barra de búsqueda en la parte superior de la página. Puedes buscar por nombre, dificultad, o tipo de proyecto."
         },
-        // Privacidad y seguridad
         {
             keywords: ['privacidad', 'seguridad', 'datos personales', 'privacy', 'security', 'personal data'],
             response: "En ProyectPaperK nos tomamos muy en serio la privacidad y seguridad de tus datos. Puedes leer nuestra política de privacidad para más detalles sobre cómo protegemos tu información."
         },
-        // Términos y condiciones
         {
             keywords: ['términos', 'condiciones', 'legal', 'terms', 'conditions', 'legal terms'],
             response: "Puedes revisar nuestros términos y condiciones haciendo clic en el enlace correspondiente en el pie de página del sitio."
         },
-        // Proyectos populares
         {
             keywords: ['proyectos populares', 'más populares', 'top projects', 'trending projects'],
             response: "Para ver los proyectos más populares, visita la sección 'Proyectos populares' en la página principal. Allí verás los proyectos más descargados y con más 'me gusta'."
         },
-        // Contacto
         {
             keywords: ['contacto', 'cómo contactar', 'ayuda', 'soporte', 'support', 'help', 'contact','persona','contactar','contacto','asistencia'],
             response: "Si necesitas ayuda, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a> o en nuestra sección de contacto en el sitio web."
         },
-        // Test Versionado 
         {
             keywords:["VersionTest"],
             response: "Version BOT V3"
@@ -657,7 +646,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
 
-    // Función para minimizar y maximizar el chatbot
     function minimizeChat() {
         chatbotContainer.classList.add('minimized');
         setTimeout(() => {
@@ -672,7 +660,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // Eventos de minimización/maximización
     minimizeBtn.addEventListener('click', minimizeChat);
     chatBubble.addEventListener('click', maximizeChat);
     chatbotHeader.addEventListener('click', function(e) {
@@ -681,7 +668,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Función para enviar el mensaje del usuario
     window.sendMessage = function() {
         const message = userInput.value.trim().toLowerCase();
         if (message) {
@@ -695,7 +681,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para añadir mensajes al chat
     function addMessage(message, className) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', className);
@@ -708,7 +693,6 @@ document.addEventListener('DOMContentLoaded', () => {
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
 
-    // Función para obtener la respuesta del bot
     function getBotResponse(message) {
         let bestMatch = null;
         let highestScore = 0;
@@ -721,16 +705,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Si se encuentra una buena coincidencia
         if (bestMatch && highestScore > 0.5) {
             return bestMatch.response;
         }
 
-        // Si no se encuentra una coincidencia
         return "Lo siento, no entiendo completamente tu pregunta. Prueba reformulando o pregunta sobre cómo funciona ProyectPaperK.";
     }
 
-    // Función para calcular el puntaje de coincidencia entre el mensaje del usuario y las palabras clave
     function getMatchScore(message, keywords) {
         let maxScore = 0;
         for (const keyword of keywords) {
@@ -742,7 +723,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return maxScore;
     }
 
-    // Función para calcular la similitud entre dos cadenas
     function similarity(s1, s2) {
         let longer = s1;
         let shorter = s2;
@@ -757,7 +737,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
     }
 
-    // Función para calcular la distancia de edición (Levenshtein distance)
     function editDistance(s1, s2) {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
@@ -785,22 +764,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return costs[s2.length];
     }
 
-    // Enviar mensaje al presionar Enter
     userInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             sendMessage();
         }
     });
 
-    // Mensaje de bienvenida y minimización automática
     setTimeout(() => {
         addMessage("¡Hola! Soy el asistente virtual de ProyectPaperK. ¿En qué puedo ayudarte hoy?", 'bot-message');
     }, 1000);
 
     setTimeout(minimizeChat, 5000);
 });
-
-
 
 function openPopup() {
     document.getElementById('popupForm').style.display = 'flex';
@@ -816,10 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
     toggle.addEventListener('change', function() {
         if (this.checked) {
             console.log('Contenido explícito activado');
-            // Add your logic for when explicit content is enabled
         } else {
             console.log('Contenido explícito desactivado');
-            // Add your logic for when explicit content is disabled
         }
     });
 });
