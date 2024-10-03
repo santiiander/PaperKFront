@@ -901,7 +901,7 @@ footer {
 }
 
 #descripcion{
-  width: 60vh;
+  width: auto;
   resize: none;
 }
 

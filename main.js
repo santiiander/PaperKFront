@@ -796,3 +796,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Agregar esta función al final de index.js
+
+function checkDashboardAccess() {
+    const token = getToken();
+    const userEmail = getUserEmail();
+    
+    if (!token || !userEmail) {
+        console.log('No hay token de acceso o email de usuario');
+        return;
+    }
+
+    const allowedEmails = ['santiagoandermatten1@gmail.com', 'angel242007@hotmail.com', 'triton500puebla@gmail.com'];
+
+    if (allowedEmails.includes(userEmail)) {
+        const dashboardLink = document.createElement('a');
+        dashboardLink.href = 'dashboard.html';
+        dashboardLink.textContent = 'Acceder al Dashboard';
+        dashboardLink.className = 'dashboard-link';
+        document.body.appendChild(dashboardLink);
+    }
+}
+
+// Modificar la función existente updateUserUI para incluir checkDashboardAccess
+function updateUserUI() {
+    const emailElement = document.getElementById('userEmails');
+    const userEmail = getUserEmail();
+    emailElement.textContent = userEmail ? userEmail : 'Usuario no autenticado';
+    
+    // Llamar a checkDashboardAccess después de actualizar la UI del usuario
+    checkDashboardAccess();
+}
+
+// No es necesario modificar estas funciones existentes
+function getToken() {
+    return localStorage.getItem('access_token');
+}
+
+function getUserEmail() {
+    return localStorage.getItem('username');
+}
+
+// Asegúrate de que updateUserUI se llame cuando se carga la página
+document.addEventListener('DOMContentLoaded', () => {
+    loadUserProjects();
+    updateUserUI();
+
+    // ... (resto del código existente)
+});
