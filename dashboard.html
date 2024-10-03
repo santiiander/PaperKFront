@@ -39,7 +39,7 @@
     <div id="dashboard" class="container mx-auto px-4 py-8 hidden">
         <h1 class="text-4xl font-bold text-center mb-8 text-blue-600">Dashboard de PaperK</h1>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <div class="card bg-white p-6 rounded-lg shadow-lg animate-fade-in">
                 <p class="text-sm text-gray-500 mb-1">Total Proyectos</p>
                 <p id="totalProjects" class="text-3xl font-bold text-blue-600">-</p>
@@ -51,6 +51,10 @@
             <div class="card bg-white p-6 rounded-lg shadow-lg animate-fade-in">
                 <p class="text-sm text-gray-500 mb-1">Total Usuarios</p>
                 <p id="totalUsers" class="text-3xl font-bold text-purple-600">-</p>
+            </div>
+            <div class="card bg-white p-6 rounded-lg shadow-lg animate-fade-in">
+                <p class="text-sm text-gray-500 mb-1">Usuarios Conectados</p>
+                <p id="connectedUsers" class="text-3xl font-bold text-red-600">-</p>
             </div>
             <div class="card bg-white p-6 rounded-lg shadow-lg animate-fade-in">
                 <button id="downloadCSV" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-300">
@@ -133,7 +137,7 @@
         async function fetchDashboardData() {
             try {
                 const token = localStorage.getItem('access_token');
-                const [statsResponse, summaryResponse] = await Promise.all([
+                const [statsResponse, summaryResponse, connectedUsersResponse] = await Promise.all([
                     fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/stats', {
                         headers: {
                             "Authorization": `Bearer ${token}`
@@ -143,34 +147,59 @@
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
+                    }),
+                    fetch('https://proyectpaperk-production.up.railway.app/usuarios/connected-users', {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
                     })
                 ]);
 
-                if (!statsResponse.ok || !summaryResponse.ok) {
-                    throw new Error('Error fetching data');
-                }
 
                 const statsData = await statsResponse.json();
                 const summaryData = await summaryResponse.json();
+                const connectedUsersData = await connectedUsersResponse.json();
 
-                updateDashboard(statsData, summaryData);
+                updateDashboard(statsData, summaryData, connectedUsersData.connected_users);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 document.getElementById('loading').textContent = 'Error al cargar los datos';
             }
         }
 
-        function updateDashboard(stats, summary) {
+        function updateDashboard(stats, summary, connectedUsers) {
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
 
             document.getElementById('totalProjects').textContent = stats.total_projects;
             document.getElementById('totalLikes').textContent = stats.total_likes;
             document.getElementById('totalUsers').textContent = stats.total_users;
+            document.getElementById('connectedUsers').textContent = connectedUsers;
 
             updateTopPublishersTable(stats.top_publishers);
             createWeeklyActivityChart(summary);
             createCumulativeProjectsChart(summary);
+
+            // Actualizar usuarios conectados cada 30 segundos
+            setInterval(updateConnectedUsers, 30000);
+        }
+
+        async function updateConnectedUsers() {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch('https://proyectpaperk-production.up.railway.app/api/connected-users', {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Error fetching connected users');
+                }
+                const data = await response.json();
+                document.getElementById('connectedUsers').textContent = data.connected_users;
+            } catch (error) {
+                console.error('Error updating connected users:', error);
+            }
         }
 
         function updateTopPublishersTable(publishers) {
