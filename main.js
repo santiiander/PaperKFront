@@ -845,3 +845,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ... (resto del código existente)
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchTopPublishers();
+});
+
+async function fetchTopPublishers() {
+    try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/stats', {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch dashboard stats');
+        }
+
+        const data = await response.json();
+        updateTopPublishersBanner(data.top_publishers);
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+    }
+}
+
+function updateTopPublishersBanner(publishers) {
+    const firstPublisher = publishers[0];
+    const secondPublisher = publishers[1];
+
+    updatePublisherInfo('firstPublisher', firstPublisher);
+    updatePublisherInfo('secondPublisher', secondPublisher);
+
+    // Trigger confetti effect
+    createConfetti();
+}
+
+function updatePublisherInfo(elementId, publisher) {
+    const element = document.getElementById(elementId);
+    element.querySelector('.publisher-email').textContent = publisher.email;
+    element.querySelector('.publisher-projects').textContent = `Proyectos: ${publisher.project_count}`;
+}
+
+function createConfetti() {
+    const confettiContainer = document.querySelector('.confetti-container');
+    confettiContainer.innerHTML = ''; // Clear any existing confetti
+
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.backgroundColor = getRandomColor();
+        confettiContainer.appendChild(confetti);
+    }
+}
+
+function getRandomColor() {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
