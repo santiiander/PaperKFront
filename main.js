@@ -905,3 +905,64 @@ function getRandomColor() {
     const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
+// Funciones navideñas actualizadas
+function createOrnaments() {
+    const ornamentsContainer = document.getElementById('ornaments');
+    const numberOfOrnaments = 50;
+    ornamentsContainer.innerHTML = '';
+
+    const colors = getComputedStyle(document.documentElement).getPropertyValue('--ornament-colors').split(',');
+
+    for (let i = 0; i < numberOfOrnaments; i++) {
+        const ornament = document.createElement('div');
+        ornament.className = 'ornament';
+        ornament.style.left = `${Math.random() * 100}%`;
+        ornament.style.opacity = Math.random() * 0.5 + 0.3;
+        ornament.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)].trim();
+        ornament.style.width = `${Math.random() * 10 + 5}px`;
+        ornament.style.height = ornament.style.width;
+        ornament.style.animationDuration = `${Math.random() * 5 + 5}s`;
+        ornament.style.animationDelay = `${Math.random() * 5}s`;
+        
+        ornamentsContainer.appendChild(ornament);
+    }
+}
+
+function createReindeer() {
+    const reindeerContainer = document.getElementById('reindeerContainer');
+    reindeerContainer.innerHTML = '';
+    const numberOfReindeer = 5;
+
+    for (let i = 0; i < numberOfReindeer; i++) {
+        const reindeer = document.createElement('div');
+        reindeer.className = 'flying-reindeer';
+        reindeer.style.top = `${Math.random() * 50}%`;
+        reindeer.style.left = `${-150 - (i * 100)}px`;
+        reindeer.style.animationDuration = `${20 + i * 2}s`;
+        reindeer.style.animationDelay = `${i * 2}s`;
+        reindeer.style.animation = `fly 3s infinite ease-in-out, moveAcrossSky ${20 + i * 2}s linear infinite ${i * 2}s`;
+        reindeerContainer.appendChild(reindeer);
+    }
+}
+
+function initChristmasTheme() {
+    createOrnaments();
+    createReindeer();
+    
+    setInterval(createOrnaments, 10000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initChristmasTheme();
+});
+
+// Añadir animación de movimiento a través del cielo
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes moveAcrossSky {
+        0% { left: -150px; }
+        100% { left: calc(100% + 150px); }
+    }
+`;
+document.head.appendChild(style);
+
