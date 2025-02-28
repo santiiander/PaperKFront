@@ -1738,3 +1738,34 @@ input:checked + .slider:before {
   }
 }
 
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.loading-logo {
+  width: 80px;
+  height: 80px;
+
+}
+
+
+
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background-color: rgba(106, 141, 146, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
