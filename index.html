@@ -11,13 +11,6 @@
     <script src="main.js" defer></script>
 </head>
 <body>
-    <div id="christmasElements">
-        <div class="christmas-tree christmas-tree-left"></div>
-        <div class="christmas-tree christmas-tree-right"></div>
-        <div id="ornaments" class="ornaments"></div>
-        <div id="reindeerContainer"></div>
-    </div>
-
     <header class="headerPrincipal">
         <div class="header-left">
             <a href="templates/regards.html" class="logo">
@@ -26,6 +19,7 @@
             <nav>
                 <ul class="nav-list">
                     <li><a href="inicio.html"><img src="home.png" alt="Inicio" class="icon">Inicio</a></li>
+                    <li><a href="wip.html"><img src="telephone.png" alt="Contacto" class="icon">Contacto</a></li>
                     <li><a href="https://santianderdev.site/"><img src="telephone.png" alt="Contacto" class="icon">Contacto</a></li>
                     <li><a href="about.html"><img src="info.png" alt="Información" class="icon">About</a></li>
                     <li><a href="javascript:void(0)" onclick="openPopup()"><img src="cloud-upload-alt.png" alt="Publicar" class="icon">Publicar</a></li>
@@ -128,7 +122,7 @@
                 <button onclick="sendMessage()">Enviar</button>
             </div>
         </div>
-        
+
         <div class="chat-bubble" id="chat-bubble">
             <img src="resources/origami-2.png" alt="botIcon" class="botIcon">
         </div>
@@ -141,7 +135,7 @@
         <div id="projectsContainer" class="papersK">
             <!-- Projects will be dynamically added here -->
         </div>
-        
+
         <!-- Modal -->
         <div id="projectModal" class="modal">
             <div class="modal-content">
@@ -206,4 +200,3 @@
         <p><a href="https://santianderdev.site" target="_blank">Santiago Andermatten</a></p>
     </footer>
 </body>
-</html>

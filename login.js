@@ -4,7 +4,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase
 import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js';
 
 // Obtener la configuración de Firebase desde el backend
-fetch('https://proyectpaperk-production.up.railway.app/firebase-config')
+fetch('https://proyectpaperk-ttty.onrender.com/firebase-config')
     .then(response => response.json())
     .then(firebaseConfig => {
         console.log("Working")
@@ -44,7 +44,7 @@ fetch('https://proyectpaperk-production.up.railway.app/firebase-config')
             console.log('Datos de inicio de sesión:', loginData); // Imprime los datos enviados
 
             try {
-                const response = await fetch('https://proyectpaperk-production.up.railway.app/usuarios/login', {
+                const response = await fetch('https://proyectpaperk-ttty.onrender.com/usuarios/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ fetch('https://proyectpaperk-production.up.railway.app/firebase-config')
                 .then(async (result) => {
                     const idToken = await result.user.getIdToken();
 
-                    const response = await fetch('https://proyectpaperk-production.up.railway.app/usuarios/login-google', {
+                    const response = await fetch('https://proyectpaperk-ttty.onrender.com/usuarios/login-google', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded' // Cambio a x-www-form-urlencoded

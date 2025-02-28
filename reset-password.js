@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`https://proyectpaperk-production.up.railway.app/usuarios/forgot-password?email=${encodeURIComponent(email)}`, {
+            const response = await fetch(`https://proyectpaperk-ttty.onrender.com/usuarios/forgot-password?email=${encodeURIComponent(email)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`https://proyectpaperk-production.up.railway.app/usuarios/reset-password?email=${encodeURIComponent(email)}&verification_code=${encodeURIComponent(verification_code)}&new_password=${encodeURIComponent(new_password)}`, {
+            const response = await fetch(`https://proyectpaperk-ttty.onrender.com/usuarios/reset-password?email=${encodeURIComponent(email)}&verification_code=${encodeURIComponent(verification_code)}&new_password=${encodeURIComponent(new_password)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'

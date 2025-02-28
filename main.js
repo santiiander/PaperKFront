@@ -129,8 +129,8 @@ function loadProjects(page) {
     isLoading = true;
 
     const url = isAdult
-        ? `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/sensibles?page=${page}&size=${limit}`
-        : `https://proyectpaperk-production.up.railway.app/proyectos/proyectos/traer?page=${page}&size=${limit}`;
+        ? `https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/sensibles?page=${page}&size=${limit}`
+        : `https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/traer?page=${page}&size=${limit}`;
 
     fetch(url, {
         headers: {
@@ -176,7 +176,7 @@ function displayProjects(projects) {
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
                 <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
-                <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+                <img src="https://proyectpaperk-ttty.onrender.com/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
                 <div class="project-actions">
                     <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
@@ -207,7 +207,7 @@ function searchProjects() {
 
 function loadFeaturedProjects() {
     console.log('Loading featured projects...');
-    fetch('https://proyectpaperk-production.up.railway.app/proyectos/proyectos/destacados', {
+    fetch('https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/destacados', {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -252,7 +252,7 @@ function displayFeaturedProject(project, containerId, title) {
         <h3>${title}</h3>
         <h4>${project.nombre}</h4>
         <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
-        <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+        <img src="https://proyectpaperk-ttty.onrender.com/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
         <p>${project.descripcion}</p>
         <div class="project-actions">
             <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
@@ -266,7 +266,7 @@ function displayFeaturedProject(project, containerId, title) {
 }
 
 function toggleLike(projectId) {
-    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}/like`, {
+    fetch(`https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/${projectId}/like`, {
         method: 'POST',
         headers: {
             "Authorization": `Bearer ${getToken()}`
@@ -304,7 +304,7 @@ function downloadPDF(pdfPath, projectId) {
     downloadButton.textContent = 'Descargando...';
     loadingSpinner.style.display = 'inline-block';
 
-    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}`, {
+    fetch(`https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/${projectId}`, {
         method: 'POST',
         headers: {
             "Authorization": `Bearer ${getToken()}`,
@@ -320,7 +320,7 @@ function downloadPDF(pdfPath, projectId) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return fetch(`https://proyectpaperk-production.up.railway.app/${pdfPath}`, {
+        return fetch(`https://proyectpaperk-ttty.onrender.com/${pdfPath}`, {
             headers: {
                 "Authorization": `Bearer ${getToken()}`
             }
@@ -366,7 +366,7 @@ function createProject(event) {
     submitButton.textContent = 'Subiendo...';
     loadingSpinner.style.display = 'inline-block';
 
-    fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/", {
+    fetch("https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/", {
         method: "POST",
         body: formData,
         headers: {
@@ -515,7 +515,7 @@ function openModal(id, nombre, usuario_nombre, descripcion, imagen, archivo_pdf)
     const modalContent = document.getElementById('modalProjectContent');
     modalContent.innerHTML = `
         <div class="modal-project-details">
-            <img src="https://proyectpaperk-production.up.railway.app/${imagen}" alt="Imagen del Proyecto" class="modal-project-image">
+            <img src="https://proyectpaperk-ttty.onrender.com/${imagen}" alt="Imagen del Proyecto" class="modal-project-image">
             <div class="modal-project-info">
                 <h2 class="modal-project-title">${nombre}</h2>
                 <p class="modal-project-author"><strong>Subido por:</strong> ${usuario_nombre}</p>
@@ -853,7 +853,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function fetchTopPublishers() {
     try {
         const token = localStorage.getItem('access_token');
-        const response = await fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/stats', {
+        const response = await fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/stats', {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -905,64 +905,3 @@ function getRandomColor() {
     const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
-// Funciones navideñas actualizadas
-function createOrnaments() {
-    const ornamentsContainer = document.getElementById('ornaments');
-    const numberOfOrnaments = 50;
-    ornamentsContainer.innerHTML = '';
-
-    const colors = getComputedStyle(document.documentElement).getPropertyValue('--ornament-colors').split(',');
-
-    for (let i = 0; i < numberOfOrnaments; i++) {
-        const ornament = document.createElement('div');
-        ornament.className = 'ornament';
-        ornament.style.left = `${Math.random() * 100}%`;
-        ornament.style.opacity = Math.random() * 0.5 + 0.3;
-        ornament.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)].trim();
-        ornament.style.width = `${Math.random() * 10 + 5}px`;
-        ornament.style.height = ornament.style.width;
-        ornament.style.animationDuration = `${Math.random() * 5 + 5}s`;
-        ornament.style.animationDelay = `${Math.random() * 5}s`;
-        
-        ornamentsContainer.appendChild(ornament);
-    }
-}
-
-function createReindeer() {
-    const reindeerContainer = document.getElementById('reindeerContainer');
-    reindeerContainer.innerHTML = '';
-    const numberOfReindeer = 5;
-
-    for (let i = 0; i < numberOfReindeer; i++) {
-        const reindeer = document.createElement('div');
-        reindeer.className = 'flying-reindeer';
-        reindeer.style.top = `${Math.random() * 50}%`;
-        reindeer.style.left = `${-150 - (i * 100)}px`;
-        reindeer.style.animationDuration = `${20 + i * 2}s`;
-        reindeer.style.animationDelay = `${i * 2}s`;
-        reindeer.style.animation = `fly 3s infinite ease-in-out, moveAcrossSky ${20 + i * 2}s linear infinite ${i * 2}s`;
-        reindeerContainer.appendChild(reindeer);
-    }
-}
-
-function initChristmasTheme() {
-    createOrnaments();
-    createReindeer();
-    
-    setInterval(createOrnaments, 10000);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    initChristmasTheme();
-});
-
-// Añadir animación de movimiento a través del cielo
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes moveAcrossSky {
-        0% { left: -150px; }
-        100% { left: calc(100% + 150px); }
-    }
-`;
-document.head.appendChild(style);
-

@@ -21,7 +21,7 @@ function getToken() {
 }
 
 function loadUserProjects() {
-    fetch("https://proyectpaperk-production.up.railway.app/proyectos/proyectos/mi-proyecto", {
+    fetch("https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/mi-proyecto", {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -47,7 +47,7 @@ function loadUserProjects() {
 
             projectDiv.innerHTML = `
                 <h2>${project.nombre}</h2>
-                <img src="https://proyectpaperk-production.up.railway.app/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
+                <img src="https://proyectpaperk-ttty.onrender.com/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
                 <p>${project.descripcion}</p>
                 <button class="delete-button" onclick="showDeletePopup(${project.id})">
                     <img src="delete.png" alt="Eliminar">
@@ -73,7 +73,7 @@ function closePopup(popupId) {
 }
 
 function deleteProject(projectId) {
-    fetch(`https://proyectpaperk-production.up.railway.app/proyectos/proyectos/${projectId}`, {
+    fetch(`https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/${projectId}`, {
         method: 'DELETE',
         headers: {
             "Authorization": `Bearer ${getToken()}`,

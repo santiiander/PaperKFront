@@ -40,7 +40,7 @@ function registerUser() {
     const form = document.getElementById('registerForm');
     const formData = new FormData(form);
 
-    fetch('https://proyectpaperk-production.up.railway.app/usuarios/register', {
+    fetch('https://proyectpaperk-ttty.onrender.com/usuarios/register', {
         method: 'POST',
         body: JSON.stringify({
             email: formData.get('email'),
