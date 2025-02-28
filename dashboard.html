@@ -138,17 +138,17 @@
             try {
                 const token = localStorage.getItem('access_token');
                 const [statsResponse, summaryResponse, connectedUsersResponse] = await Promise.all([
-                    fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/stats', {
+                    fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/stats', {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/weekly-summary', {
+                    fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/weekly-summary', {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch('https://proyectpaperk-production.up.railway.app/usuarios/connected-users', {
+                    fetch('https://proyectpaperk-ttty.onrender.com/usuarios/connected-users', {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
@@ -187,7 +187,7 @@
         async function updateConnectedUsers() {
             try {
                 const token = localStorage.getItem('access_token');
-                const response = await fetch('https://proyectpaperk-production.up.railway.app/api/connected-users', {
+                const response = await fetch('https://proyectpaperk-ttty.onrender.com/api/connected-users', {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -277,7 +277,7 @@
         document.getElementById('downloadCSV').addEventListener('click', async function() {
             try {
                 const token = localStorage.getItem('access_token');
-                const response = await fetch('https://proyectpaperk-production.up.railway.app/api/dashboard/descargar-resumen-semanal', {
+                const response = await fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/descargar-resumen-semanal', {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
