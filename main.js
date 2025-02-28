@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadingScreen.style.opacity = '0';
                 loadingScreen.style.visibility = 'hidden';
                 sessionStorage.setItem('animationShown', 'true');
+                
+                // Add entrance animations for main elements
+                animateEntranceElements();
             }, 500);
         }
     }
@@ -43,11 +46,35 @@ document.addEventListener('DOMContentLoaded', function() {
     simulateLoading();
 });
 
+function animateEntranceElements() {
+    const elements = [
+        document.querySelector('.header-principal'),
+        document.querySelector('.hero-section'),
+        document.querySelector('.info-section'),
+        document.querySelector('.top-publishers'),
+        document.querySelector('.featured-projects'),
+        document.querySelector('.main-content')
+    ];
+    
+    elements.forEach((element, index) => {
+        if (element) {
+            setTimeout(() => {
+                element.classList.add('animate-in');
+            }, index * 200);
+        }
+    });
+}
+
 function handleLogout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('username');
-    sessionStorage.clear();
-    window.location.href = 'login.html';
+    // Add a fade-out animation
+    document.body.classList.add('fade-out');
+    
+    setTimeout(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('username');
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+    }, 300);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,6 +82,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
     }
+    
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
 });
 
 let deferredPrompt;
@@ -101,7 +142,35 @@ document.addEventListener('DOMContentLoaded', () => {
             searchProjects();
         });
     }
+    
+    // Initialize file input labels
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const label = this.nextElementSibling;
+            if (label && this.files.length > 0) {
+                label.textContent = this.files[0].name;
+            }
+        });
+    });
+    
+    // Add animation to project cards on scroll
+    animateOnScroll();
 });
+
+function animateOnScroll() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.paper, .featured-project').forEach(item => {
+        observer.observe(item);
+    });
+}
 
 function getToken() {
     return localStorage.getItem('access_token');
@@ -121,12 +190,22 @@ function handleAgeVerificationToggle(event) {
     }
     localStorage.setItem('isAdult', isAdult);
     
-    window.location.reload();
+    // Add fade transition before reload
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
 }
 
 function loadProjects(page) {
     if (isLoading) return;
     isLoading = true;
+    
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-indicator';
+    loadingIndicator.innerHTML = '<div class="spinner"></div><p>Cargando proyectos...</p>';
+    document.getElementById('projectsContainer').appendChild(loadingIndicator);
 
     const url = isAdult
         ? `https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/sensibles?page=${page}&size=${limit}`
@@ -148,21 +227,35 @@ function loadProjects(page) {
         return response.json();
     })
     .then(projects => {
+        // Remove loading indicator
+        document.querySelector('.loading-indicator')?.remove();
+        
         if (projects.length === 0) {
             window.removeEventListener('scroll', handleScroll);
+            
+            if (page === 1) {
+                const noProjectsMessage = document.createElement('div');
+                noProjectsMessage.className = 'no-projects-message';
+                noProjectsMessage.innerHTML = '<p>No hay proyectos disponibles en este momento.</p>';
+                document.getElementById('projectsContainer').appendChild(noProjectsMessage);
+            }
             return;
         }
 
         allProjects = allProjects.concat(projects);
-
         displayProjects(projects);
-
         currentPage++;
         isLoading = false;
     })
     .catch(error => {
         console.error('Error al cargar los proyectos:', error);
         isLoading = false;
+        document.querySelector('.loading-indicator')?.remove();
+        
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.innerHTML = '<p>Error al cargar los proyectos. Por favor, intenta de nuevo más tarde.</p>';
+        document.getElementById('projectsContainer').appendChild(errorMessage);
     });
 }
 
@@ -177,7 +270,7 @@ function displayProjects(projects) {
                 <h2>${project.nombre}</h2>
                 <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
                 <img src="https://proyectpaperk-ttty.onrender.com/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
-                <p>${project.descripcion}</p>
+                <p>${project.descripcion.length > 100 ? project.descripcion.substring(0, 100) + '...' : project.descripcion}</p>
                 <div class="project-actions">
                     <button class="view-more-btn" onclick="openModal('${project.id}', '${project.nombre}', '${project.usuario_nombre}', '${project.descripcion}', '${project.imagen}', '${project.archivo_pdf}')">Ver más</button>
                     <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
@@ -202,11 +295,25 @@ function searchProjects() {
     const container = document.getElementById('projectsContainer');
     container.innerHTML = '';
 
-    displayProjects(filteredProjects);
+    if (filteredProjects.length === 0) {
+        const noResultsMessage = document.createElement('div');
+        noResultsMessage.className = 'no-results-message';
+        noResultsMessage.innerHTML = `<p>No se encontraron resultados para "${searchTerm}"</p>`;
+        container.appendChild(noResultsMessage);
+    } else {
+        displayProjects(filteredProjects);
+    }
 }
 
 function loadFeaturedProjects() {
     console.log('Loading featured projects...');
+    
+    const mostLikedProject = document.getElementById('mostLikedProject');
+    const latestProject = document.getElementById('latestProject');
+    
+    if (mostLikedProject) mostLikedProject.innerHTML = '<div class="spinner"></div>';
+    if (latestProject) latestProject.innerHTML = '<div class="spinner"></div>';
+    
     fetch('https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/destacados', {
         headers: {
             "Authorization": `Bearer ${getToken()}`
@@ -224,11 +331,13 @@ function loadFeaturedProjects() {
             displayFeaturedProject(data.most_liked, 'mostLikedProject', 'Proyecto más popular');
         } else {
             console.log('No most liked project found');
+            if (mostLikedProject) mostLikedProject.innerHTML = '<p>No hay proyectos destacados disponibles</p>';
         }
         if (data.latest) {
             displayFeaturedProject(data.latest, 'latestProject', 'Proyecto más reciente');
         } else {
             console.log('No latest project found');
+            if (latestProject) latestProject.innerHTML = '<p>No hay proyectos recientes disponibles</p>';
         }
     })
     .catch(error => {
@@ -253,7 +362,7 @@ function displayFeaturedProject(project, containerId, title) {
         <h4>${project.nombre}</h4>
         <p><strong>Subido por:</strong> ${project.usuario_nombre}</p>
         <img src="https://proyectpaperk-ttty.onrender.com/${project.imagen}" alt="Imagen del Proyecto" class="project-image">
-        <p>${project.descripcion}</p>
+        <p>${project.descripcion.length > 150 ? project.descripcion.substring(0, 150) + '...' : project.descripcion}</p>
         <div class="project-actions">
             <button class="download-button" onclick="downloadPDF('${project.archivo_pdf}', '${project.id}')">Descargar PDF</button>
             <button class="like-button" onclick="toggleLike('${project.id}')" data-likes="${project.likes_count}">
@@ -266,6 +375,12 @@ function displayFeaturedProject(project, containerId, title) {
 }
 
 function toggleLike(projectId) {
+    const likeButton = document.querySelector(`button[onclick="toggleLike('${projectId}')"]`);
+    const heartIcon = likeButton.querySelector('.heart-icon');
+    
+    // Add animation
+    heartIcon.classList.add('pulse');
+    
     fetch(`https://proyectpaperk-ttty.onrender.com/proyectos/proyectos/${projectId}/like`, {
         method: 'POST',
         headers: {
@@ -274,16 +389,23 @@ function toggleLike(projectId) {
     })
     .then(response => response.json())
     .then(data => {
-        const likeButton = document.querySelector(`button[onclick="toggleLike('${projectId}')"]`);
         const likesCountSpan = likeButton.querySelector('.likes-count');
         likesCountSpan.textContent = data.likes_count;
         likeButton.classList.toggle('liked', data.liked);
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            heartIcon.classList.remove('pulse');
+        }, 600);
     })
-    .catch(error => console.error('Error toggling like:', error));
+    .catch(error => {
+        console.error('Error toggling like:', error);
+        heartIcon.classList.remove('pulse');
+    });
 }
 
 function handleScroll() {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoading) {
         loadProjects(currentPage);
     }
 }
@@ -341,6 +463,16 @@ function downloadPDF(pdfPath, projectId) {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.textContent = 'Descarga completada';
+        downloadButton.parentNode.appendChild(successMessage);
+        
+        setTimeout(() => {
+            successMessage.remove();
+        }, 3000);
     })
     .catch(error => {
         console.error('Error al descargar el PDF:', error);
@@ -379,11 +511,20 @@ function createProject(event) {
             return;
         }
         if (response.ok) {
-            alert("Proyecto creado exitosamente");
-            closePopup();
-            currentPage = 1;
-            document.getElementById('projectsContainer').innerHTML = '';
-            loadProjects(currentPage);
+            // Show success animation
+            const successAnimation = document.createElement('div');
+            successAnimation.className = 'success-animation';
+            successAnimation.innerHTML = '<div class="checkmark"></div>';
+            form.appendChild(successAnimation);
+            
+            setTimeout(() => {
+                alert("Proyecto creado exitosamente");
+                closePopup();
+                currentPage = 1;
+                document.getElementById('projectsContainer').innerHTML = '';
+                loadProjects(currentPage);
+                successAnimation.remove();
+            }, 1500);
         } else {
             return response.json().then(result => {
                 throw new Error(result.detail || 'Error creando proyecto');
@@ -402,11 +543,38 @@ function createProject(event) {
 }
 
 function openPopup() {
-    document.getElementById("popupForm").style.display = "block";
+    document.getElementById("popupForm").style.display = "flex";
+    document.getElementById("popupForm").classList.add("show");
+    
+    // Reset form
+    document.getElementById("proyectoForm").reset();
+    
+    // Reset file input labels
+    const fileLabels = document.querySelectorAll('.file-input-label');
+    fileLabels.forEach(label => {
+        label.textContent = 'Seleccionar archivo';
+    });
+    
+    // Add animation to form elements
+    const formElements = document.querySelectorAll('.popup-content > *, .form-group');
+    formElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'all 0.3s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 100 + (index * 50));
+    });
 }
 
 function closePopup() {
-    document.getElementById("popupForm").style.display = "none";
+    const popupForm = document.getElementById("popupForm");
+    popupForm.classList.remove("show");
+    setTimeout(() => {
+        popupForm.style.display = "none";
+    }, 300);
 }
 
 function handleUnauthorized() {
@@ -495,13 +663,7 @@ function initializeCarousel() {
 
 document.addEventListener('DOMContentLoaded', initializeCarousel);
 
-const profileImage = document.querySelector('.profile-image');
-window.addEventListener('scroll', function () {
-    const rotation = window.scrollY / 5;
-    profileImage.style.transform = `rotate(${rotation}deg)`;
-});
-
-document.querySelector('#proyectoForm').addEventListener('submit', event => {
+document.querySelector('#proyectoForm')?.addEventListener('submit', event => {
     event.preventDefault();
     if (!getToken()) {
         alert("Por favor, inicia sesión para crear un proyecto.");
@@ -513,6 +675,7 @@ document.querySelector('#proyectoForm').addEventListener('submit', event => {
 function openModal(id, nombre, usuario_nombre, descripcion, imagen, archivo_pdf) {
     const modal = document.getElementById('projectModal');
     const modalContent = document.getElementById('modalProjectContent');
+    
     modalContent.innerHTML = `
         <div class="modal-project-details">
             <img src="https://proyectpaperk-ttty.onrender.com/${imagen}" alt="Imagen del Proyecto" class="modal-project-image">
@@ -524,18 +687,38 @@ function openModal(id, nombre, usuario_nombre, descripcion, imagen, archivo_pdf)
             </div>
         </div>
     `;
+    
     modal.style.display = 'block';
+    modal.classList.add('show');
+    
+    setTimeout(() => {
+        modal.querySelector('.modal-content').style.transform = 'translateY(0)';
+        modal.querySelector('.modal-content').style.opacity = '1';
+    }, 10);
 }
 
 window.onclick = function(event) {
     const modal = document.getElementById('projectModal');
     if (event.target == modal) {
-        modal.style.display = 'none';
+        closeModal();
     }
 }
 
 document.querySelector('.close').onclick = function() {
-    document.getElementById('projectModal').style.display = 'none';
+    closeModal();
+}
+
+function closeModal() {
+    const modal = document.getElementById('projectModal');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    modalContent.style.transform = 'translateY(20px)';
+    modalContent.style.opacity = '0';
+    
+    setTimeout(() => {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+    }, 300);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -629,71 +812,24 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             keywords: ['términos', 'condiciones', 'legal', 'terms', 'conditions', 'legal terms'],
-            response: "Puedes revisar nuestros términos y condiciones haciendo clic en el enlace correspondiente en el pie de página del sitio."
+            response: "Puedes encontrar nuestros términos y condiciones en el enlace al pie de página. Es importante leerlos para entender tus derechos y responsabilidades al usar ProyectPaperK."
         },
         {
-            keywords: ['proyectos populares', 'más populares', 'top projects', 'trending projects'],
-            response: "Para ver los proyectos más populares, visita la sección 'Proyectos populares' en la página principal. Allí verás los proyectos más descargados y con más 'me gusta'."
+            keywords: ['eliminar cuenta', 'borrar cuenta', 'delete account', 'remove account'],
+            response: "Si deseas eliminar tu cuenta, por favor contáctanos directamente y te ayudaremos con el proceso. Recuerda que esta acción es irreversible."
         },
         {
-            keywords: ['contacto', 'cómo contactar', 'ayuda', 'soporte', 'support', 'help', 'contact','persona','contactar','contacto','asistencia'],
-            response: "Si necesitas ayuda, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a> o en nuestra sección de contacto en el sitio web."
+            keywords: ['reportar', 'denunciar', 'contenido inapropiado', 'report', 'inappropriate content'],
+            response: "Si encuentras contenido inapropiado o que viola nuestras normas, por favor repórtalo usando el botón de 'Reportar' en el proyecto o contáctanos directamente. Revisaremos el contenido lo antes posible."
         },
         {
-            keywords:["VersionTest"],
-            response: "Version BOT V3"
+            keywords: ['contacto', 'cómo contactar', 'ayuda', 'soporte', 'support', 'help', 'contact', 'contactar', 'contacto', 'asistencia'],
+            response: "Si necesitas ayuda adicional, puedes contactarnos a través de <a href='https://wa.me/+543472468850' target='_blank' class='whatsapp-link'>WhatsApp</a> o en nuestra sección de contacto en el sitio web."
         }
     ];
-    
-
-    function minimizeChat() {
-        chatbotContainer.classList.add('minimized');
-        setTimeout(() => {
-            chatBubble.classList.add('visible');
-        }, 300);
-    }
-
-    function maximizeChat() {
-        chatBubble.classList.remove('visible');
-        setTimeout(() => {
-            chatbotContainer.classList.remove('minimized');
-        }, 300);
-    }
-
-    minimizeBtn.addEventListener('click', minimizeChat);
-    chatBubble.addEventListener('click', maximizeChat);
-    chatbotHeader.addEventListener('click', function(e) {
-        if (e.target !== minimizeBtn) {
-            minimizeChat();
-        }
-    });
-
-    window.sendMessage = function() {
-        const message = userInput.value.trim().toLowerCase();
-        if (message) {
-            addMessage(message, 'user-message');
-            userInput.value = '';
-
-            setTimeout(() => {
-                const response = getBotResponse(message);
-                addMessage(response, 'bot-message');
-            }, 500);
-        }
-    }
-
-    function addMessage(message, className) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', className);
-        if (className === 'bot-message') {
-            messageElement.innerHTML = message;
-        } else {
-            messageElement.textContent = message;
-        }
-        chatbotMessages.appendChild(messageElement);
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
 
     function getBotResponse(message) {
+        message = message.toLowerCase();
         let bestMatch = null;
         let highestScore = 0;
 
@@ -764,138 +900,101 @@ document.addEventListener('DOMContentLoaded', () => {
         return costs[s2.length];
     }
 
-    userInput.addEventListener('keypress', function(e) {
+    function addMessage(message, isUser = false) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', isUser ? 'user-message' : 'bot-message');
+        messageElement.innerHTML = message;
+        chatbotMessages.appendChild(messageElement);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            userInput.value = '';
+
+            setTimeout(() => {
+                const botResponse = getBotResponse(message);
+                addMessage(botResponse);
+            }, 500);
+        }
+    }
+
+    userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             sendMessage();
         }
     });
 
-    setTimeout(() => {
-        addMessage("¡Hola! Soy el asistente virtual de ProyectPaperK. ¿En qué puedo ayudarte hoy?", 'bot-message');
-    }, 1000);
+    chatBubble.addEventListener('click', () => {
+        chatbotContainer.classList.remove('minimized');
+        chatBubble.classList.remove('visible');
+    });
 
-    setTimeout(minimizeChat, 5000);
-});
+    minimizeBtn.addEventListener('click', () => {
+        chatbotContainer.classList.add('minimized');
+        chatBubble.classList.add('visible');
+    });
 
-function openPopup() {
-    document.getElementById('popupForm').style.display = 'flex';
-}
-
-function closePopup() {
-    document.getElementById('popupForm').style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const toggle = document.getElementById('ageVerificationToggle');
-    
-    toggle.addEventListener('change', function() {
-        if (this.checked) {
-            console.log('Contenido explícito activado');
-        } else {
-            console.log('Contenido explícito desactivado');
+    chatbotHeader.addEventListener('click', (e) => {
+        if (e.target !== minimizeBtn) {
+            chatbotContainer.classList.toggle('minimized');
+            chatBubble.classList.toggle('visible');
         }
     });
+
+    setTimeout(() => {
+        addMessage("¡Hola! Soy el asistente virtual de ProyectPaperK. ¿En qué puedo ayudarte hoy?");
+    }, 1000);
+
+    setTimeout(() => {
+        chatbotContainer.classList.add('minimized');
+        chatBubble.classList.add('visible');
+    }, 5000);
 });
 
-// Agregar esta función al final de index.js
-
-function checkDashboardAccess() {
-    const token = getToken();
-    const userEmail = getUserEmail();
-    
-    if (!token || !userEmail) {
-        console.log('No hay token de acceso o email de usuario');
-        return;
-    }
-
-    const allowedEmails = ['santiagoandermatten1@gmail.com', 'angel242007@hotmail.com', 'triton500puebla@gmail.com'];
-
-    if (allowedEmails.includes(userEmail)) {
-        const dashboardLink = document.createElement('a');
-        dashboardLink.href = 'dashboard.html';
-        dashboardLink.textContent = 'Acceder al Dashboard';
-        dashboardLink.className = 'dashboard-link';
-        document.body.appendChild(dashboardLink);
-    }
-}
-
-// Modificar la función existente updateUserUI para incluir checkDashboardAccess
-function updateUserUI() {
-    const emailElement = document.getElementById('userEmails');
-    const userEmail = getUserEmail();
-    emailElement.textContent = userEmail ? userEmail : 'Usuario no autenticado';
-    
-    // Llamar a checkDashboardAccess después de actualizar la UI del usuario
-    checkDashboardAccess();
-}
-
-// No es necesario modificar estas funciones existentes
-function getToken() {
-    return localStorage.getItem('access_token');
-}
-
-function getUserEmail() {
-    return localStorage.getItem('username');
-}
-
-// Asegúrate de que updateUserUI se llame cuando se carga la página
+// Top Publishers
 document.addEventListener('DOMContentLoaded', () => {
-    loadUserProjects();
-    updateUserUI();
-
-    // ... (resto del código existente)
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetchTopPublishers();
-});
-
-async function fetchTopPublishers() {
-    try {
-        const token = localStorage.getItem('access_token');
-        const response = await fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/stats', {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch dashboard stats');
+    const token = localStorage.getItem('access_token');
+    fetch('https://proyectpaperk-ttty.onrender.com/api/dashboard/stats', {
+        headers: {
+            'Authorization': `Bearer ${token}`
         }
-
-        const data = await response.json();
-        updateTopPublishersBanner(data.top_publishers);
-    } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-    }
-}
-
-function updateTopPublishersBanner(publishers) {
-    const firstPublisher = publishers[0];
-    const secondPublisher = publishers[1];
-
-    updatePublisherInfo('firstPublisher', firstPublisher);
-    updatePublisherInfo('secondPublisher', secondPublisher);
-
-    // Trigger confetti effect
-    createConfetti();
-}
+    })
+    .then(response => response.json())
+    .then(data => {
+        const topPublishers = data.top_publishers;
+        if (topPublishers && topPublishers.length > 0) {
+            updatePublisherInfo('firstPublisher', topPublishers[0]);
+            if (topPublishers.length > 1) {
+                updatePublisherInfo('secondPublisher', topPublishers[1]);
+            }
+            createConfetti();
+        }
+    })
+    .catch(error => console.error('Error fetching top publishers:', error));
+});
 
 function updatePublisherInfo(elementId, publisher) {
     const element = document.getElementById(elementId);
-    element.querySelector('.publisher-email').textContent = publisher.email;
-    element.querySelector('.publisher-projects').textContent = `Proyectos: ${publisher.project_count}`;
+    if (element) {
+        const emailElement = element.querySelector('.publisher-email');
+        const projectsElement = element.querySelector('.publisher-projects');
+        if (emailElement) emailElement.textContent = publisher.email;
+        if (projectsElement) projectsElement.textContent = `Proyectos: ${publisher.project_count}`;
+    }
 }
 
 function createConfetti() {
     const confettiContainer = document.querySelector('.confetti-container');
-    confettiContainer.innerHTML = ''; // Clear any existing confetti
+    if (!confettiContainer) return;
 
     for (let i = 0; i < 100; i++) {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.animationDelay = `${Math.random() * 3}s`;
         confetti.style.backgroundColor = getRandomColor();
         confettiContainer.appendChild(confetti);
     }
@@ -905,3 +1004,15 @@ function getRandomColor() {
     const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.querySelector(".menu-toggle")
+    const mainNav = document.querySelector(".main-nav")
+  
+    menuToggle.addEventListener("click", () => {
+      mainNav.classList.toggle("active")
+    })
+  })
+
+
+  
