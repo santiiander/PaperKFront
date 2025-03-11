@@ -64,13 +64,12 @@ body {
 .header-principal {
   background-color: var(--header-bg);
   box-shadow: 0 4px 20px var(--shadow-color);
-  position: sticky;
+  
   top: 0;
   z-index: 1000;
   padding: 1rem 0;
   transition: all var(--transition-speed) ease;
-  justify-content: center;
-  align-items: center;
+
 }
 
 .header-container {
